@@ -15,6 +15,20 @@ Raw CSVs + players.ts + player-bios.ts
   → Push to Supabase (4 warehouse tables, blocked players skipped)
 ```
 
+## Repository
+
+This project is a **git repo** on branch `main`. Secrets and generated data are gitignored (`.env`, `data/output/`, `data/raw/`, `data/backups/`, `.venv/`).
+
+**To push to GitHub** (one-time):
+
+```bash
+# Create a new repo on GitHub (e.g. carlomartinez8/el-capi-data), then:
+git remote add origin https://github.com/carlomartinez8/el-capi-data.git
+git push -u origin main
+```
+
+After that, `git pull` and `git push` work as in la-copa-mundo. Regenerated seed files in `data/output/supabase_seed/` are **not** committed (they're in `.gitignore`); share them via pipeline runs or copy the folder when you need to load into Supabase.
+
 ## Quick Start
 
 ```bash
