@@ -14,6 +14,7 @@ Handles all field mapping from nested enriched JSON → flat relational tables.
 """
 
 import json
+import math
 import re
 from pathlib import Path
 from datetime import datetime
@@ -24,11 +25,13 @@ OUTPUT_DIR = ROOT / "data" / "output" / "supabase_seed"
 
 
 def esc(val) -> str:
-    """Escape a value for SQL. Returns 'NULL' for None/empty."""
+    """Escape a value for SQL. Returns 'NULL' for None/empty/NaN/inf."""
     if val is None:
         return "NULL"
     if isinstance(val, bool):
         return "TRUE" if val else "FALSE"
+    if isinstance(val, float) and (math.isnan(val) or math.isinf(val)):
+        return "NULL"
     if isinstance(val, (int, float)):
         return str(val)
     if isinstance(val, list):
@@ -45,7 +48,7 @@ def esc(val) -> str:
     if isinstance(val, dict):
         return "'" + json.dumps(val, ensure_ascii=False).replace("'", "''") + "'::jsonb"
     s = str(val).replace("'", "''")
-    if not s.strip():
+    if not s.strip() or s.strip().lower() in ("nan", "inf", "-inf"):
         return "NULL"
     return f"'{s}'"
 
@@ -106,6 +109,20 @@ def normalize_nationality(val):
     return NATIONALITY_NORMALIZE.get(val, val)
 
 
+def normalize_preferred_foot(val):
+    """Normalize to DB constraint: 'Left', 'Right', 'Both'."""
+    if val is None:
+        return None
+    s = str(val).strip().lower()
+    if s == "left":
+        return "Left"
+    if s == "right":
+        return "Right"
+    if s == "both":
+        return "Both"
+    return None
+
+
 def generate_sql():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -154,7 +171,7 @@ def generate_sql():
 ) VALUES (
     '{cid}', {esc(ident.get('full_legal_name') or p.get('name'))}, {esc(ident.get('known_as') or p.get('name'))},
     {esc(ident.get('date_of_birth'))}, {esc(ident.get('birth_city'))}, {esc(ident.get('birth_country'))},
-    {esc(ident.get('height_cm'))}, {esc(ident.get('preferred_foot'))},
+    {esc(ident.get('height_cm'))}, {esc(normalize_preferred_foot(ident.get('preferred_foot') or ident.get('foot')))},
     {esc(ident.get('nationality_primary') or 'Unknown')}, {esc(ident.get('nationality_secondary'))},
     {esc_text_array(ident.get('languages_spoken'))}, {esc_jsonb(ident.get('nicknames', []))},
     {esc(story.get('origin_story_en'))}, {esc(story.get('origin_story_es'))},
@@ -265,11 +282,25 @@ def generate_sql():
 
 
 def write_sql(path: Path, statements: list[str], table_name: str):
+    """Write SQL seed file with TRUNCATE to ensure clean slate."""
     with open(path, "w") as f:
-        f.write(f"-- {table_name} seed data\n")
+        f.write(f"-- {table_name} seed data (pipeline v2 — clean replace)\n")
         f.write(f"-- Generated: {datetime.utcnow().isoformat()}Z\n")
-        f.write(f"-- Records: {len(statements)}\n\n")
+        f.write(f"-- Records: {len(statements)}\n")
+        f.write(f"-- NOTE: TRUNCATE ensures old data is removed before insert.\n\n")
         f.write("BEGIN;\n\n")
+
+        # ── TRUNCATE old data first ──
+        # Order matters for FK constraints: child tables must be truncated
+        # before parent tables, or use CASCADE.
+        if table_name == "players":
+            # Players is the parent — CASCADE removes dependent rows in
+            # player_career, player_tournament, player_aliases.
+            # So players.sql MUST be loaded FIRST.
+            f.write(f"TRUNCATE TABLE {table_name} CASCADE;\n\n")
+        else:
+            f.write(f"TRUNCATE TABLE {table_name};\n\n")
+
         for stmt in statements:
             f.write(stmt + "\n\n")
         f.write("COMMIT;\n")
