@@ -31,6 +31,7 @@ from pipeline.reconcile.career_builder import build_career_trajectories, format_
 
 
 CANONICAL_PATH = OUTPUT_DIR / "players_canonical.json"
+FLAT_CANONICAL_PATH = OUTPUT_DIR / "players_canonical_latest.json"
 MERGED_OUTPUT = OUTPUT_DIR / "players_merged.json"
 
 CRITICAL_FIELDS = [
@@ -343,8 +344,197 @@ def run_merge() -> list[dict]:
     return merged_players
 
 
+def run_merge_from_flat(wc_only: bool = True) -> list[dict]:
+    """
+    Build a merged field map using the FLAT canonical (players_canonical_latest.json)
+    as the base, instead of requiring the enriched nested format.
+
+    This is the preferred entry point for the new pipeline — it doesn't need
+    GPT enrichment to have run first. Facts come from TM + static sources directly.
+
+    Returns the same format as run_merge(): list of dicts with per-field source attribution.
+    """
+    print("=" * 60)
+    print("  SOURCE PRIORITY MERGE (from flat canonical)")
+    print("=" * 60)
+
+    with open(FLAT_CANONICAL_PATH) as f:
+        all_players = json.load(f)
+    print(f"  Flat canonical: {len(all_players):,} total players")
+
+    if wc_only:
+        players = [p for p in all_players if p.get("in_wc_squad")]
+        print(f"  Filtered to {len(players)} WC 2026 squad players")
+    else:
+        players = all_players
+
+    tm_lookup = load_transfermarkt_lookup()
+    bios = load_static_bios()
+    squads = load_squads_lookup()
+    trajectories = build_career_trajectories()
+
+    # Also load GPT enriched data if available (as lowest-priority source)
+    gpt_lookup: dict[str, dict] = {}
+    enriched_path = OUTPUT_DIR / "players_enriched.json"
+    if enriched_path.exists():
+        with open(enriched_path) as f:
+            enriched = json.load(f)
+        for e in enriched:
+            sid = str(e.get("source_id", ""))
+            if sid:
+                gpt_lookup[sid] = e
+        print(f"  GPT enriched data: {len(gpt_lookup)} players (lowest priority)")
+
+    merged_players: list[dict] = []
+    stats = {"total": len(players), "tm_matched": 0, "bios_matched": 0, "squads_matched": 0, "gpt_matched": 0}
+
+    for player in players:
+        name = player.get("name", "")
+        source_id = str(player.get("source_id", ""))
+        team = player.get("wc_team_code", "")
+        slug = _to_slug(name)
+
+        # ── Source lookups ──
+        tm_data = tm_lookup.get(source_id, {})
+        if tm_data:
+            stats["tm_matched"] += 1
+
+        bio_data = bios.get(slug) or {}
+        if bio_data:
+            stats["bios_matched"] += 1
+
+        squad_data = squads.get(slug) or {}
+        if squad_data:
+            stats["squads_matched"] += 1
+
+        gpt_enriched = gpt_lookup.get(source_id, {})
+        gpt_data = _extract_gpt_fields(gpt_enriched) if gpt_enriched else {}
+        if gpt_data:
+            stats["gpt_matched"] += 1
+
+        # ── TM supplementary fields from flat source ──
+        tm_league_id = tm_data.get("current_league_id") or player.get("current_club_domestic_competition_id")
+        tm_league = COMPETITION_ID_TO_LEAGUE.get(str(tm_league_id), "") if tm_league_id else None
+
+        tm_career = trajectories.get(source_id)
+        tm_career_text = json.dumps(tm_career, ensure_ascii=False) if tm_career else None
+
+        # Also extract direct flat fields as TM source
+        flat_tm: dict = {}
+        if source_id and not source_id.startswith("static_"):
+            flat_tm = {
+                "current_club": _clean(player.get("current_club_name")),
+                "date_of_birth": str(player["date_of_birth"])[:10] if player.get("date_of_birth") else None,
+                "position": _clean(player.get("sub_position")) or _clean(player.get("position")),
+                "market_value_eur": int(float(player["market_value_eur"])) if player.get("market_value_eur") else None,
+                "height_cm": int(float(player["height_cm"])) if player.get("height_cm") else None,
+                "photo_url": _clean(player.get("photo_url")),
+                "nationality": _clean(player.get("nationality")),
+                "contract_expires": str(player["contract_expires"])[:10] if player.get("contract_expires") else None,
+                "agent": _clean(player.get("agent")),
+            }
+
+        # Merge TM lookup with flat TM (flat fills gaps the lookup might miss)
+        for k, v in flat_tm.items():
+            if v is not None and not tm_data.get(k):
+                tm_data[k] = v
+
+        # ── Build source map per field ──
+        source_map: dict[str, dict[str, any]] = {}
+        for field in CRITICAL_FIELDS:
+            sources: dict[str, any] = {}
+
+            # TM values
+            if field == "current_league":
+                if tm_league:
+                    sources["transfermarkt"] = tm_league
+            elif field == "career_trajectory":
+                if tm_career_text:
+                    sources["transfermarkt"] = tm_career_text
+            elif field in ("international_caps", "international_goals", "jersey_number", "captain", "major_trophies"):
+                pass  # TM doesn't have these
+            else:
+                tm_val = _clean(tm_data.get(field))
+                if tm_val is not None:
+                    sources["transfermarkt"] = tm_val
+
+            # Static bios
+            bio_field_map = {
+                "date_of_birth": "birthDate",
+                "height_cm": "height",
+                "market_value_eur": "marketValue",
+                "international_caps": "intlCaps",
+                "international_goals": "intlGoals",
+                "major_trophies": "achievements",
+            }
+            if field in bio_field_map:
+                raw = bio_data.get(bio_field_map[field])
+                if raw is not None:
+                    if field == "height_cm":
+                        raw = _parse_height(raw)
+                    elif field == "market_value_eur":
+                        raw = _parse_market_value(raw)
+                    if raw is not None:
+                        sources["static_bios"] = raw
+
+            # Static squads
+            if field in ("position", "jersey_number", "captain", "current_club"):
+                sq_val = _clean(squad_data.get(field))
+                if sq_val is not None:
+                    sources["static_squads"] = sq_val
+
+            # GPT enrichment (lowest priority)
+            gpt_val = _clean(gpt_data.get(field))
+            if gpt_val is not None:
+                sources["gpt_enrichment"] = gpt_val
+
+            source_map[field] = sources
+
+        # ── Resolve winners by priority ──
+        priority_order = ["transfermarkt", "static_bios", "static_squads", "gpt_enrichment"]
+        resolved: dict[str, dict] = {}
+        for field in CRITICAL_FIELDS:
+            sources = source_map[field]
+            winner_source = None
+            winner_value = None
+            for src in priority_order:
+                if src in sources and sources[src] is not None:
+                    winner_source = src
+                    winner_value = sources[src]
+                    break
+            resolved[field] = {
+                "value": winner_value,
+                "source": winner_source,
+                "all_sources": sources,
+            }
+
+        merged_players.append({
+            "source_id": source_id,
+            "name": name,
+            "wc_team_code": team,
+            "slug": slug,
+            "fields": resolved,
+        })
+
+    print(f"\n  Match rates:")
+    print(f"    Transfermarkt:  {stats['tm_matched']}/{stats['total']}")
+    print(f"    Static bios:    {stats['bios_matched']}/{stats['total']}")
+    print(f"    Static squads:  {stats['squads_matched']}/{stats['total']}")
+    print(f"    GPT enriched:   {stats['gpt_matched']}/{stats['total']}")
+
+    with open(MERGED_OUTPUT, "w") as f:
+        json.dump(merged_players, f, indent=2, ensure_ascii=False)
+    print(f"\n  Wrote merged data to {MERGED_OUTPUT}")
+
+    return merged_players
+
+
 if __name__ == "__main__":
-    result = run_merge()
+    import sys
+    if "--flat" in sys.argv:
+        result = run_merge_from_flat()
+    else:
+        result = run_merge()
     print(f"\n  Sample (first 3 players):")
     for p in result[:3]:
         print(f"\n  {p['name']} ({p['wc_team_code']}):")

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-El Capi Data Pipeline — ChatGPT Player Enrichment (Full Schema)
+El Capi Data Pipeline — GPT Narrative Enrichment (v3 — Narrative-Only)
 
-Takes the canonical player list and uses OpenAI to gather rich biographical,
-career, personality, and World Cup data for each player.
+Takes the merged player facts and uses OpenAI to generate NARRATIVE content only.
+Facts (DOB, height, position, club, market value, etc.) come from the merge step,
+NOT from GPT. This module only produces stories, playing style, personality, etc.
 
 Usage:
     python run_enrichment.py                           # enrich WC squad players
@@ -11,6 +12,7 @@ Usage:
     python run_enrichment.py --player "Lionel Messi"   # single player
     python run_enrichment.py --batch 50                # limit batch size
     python run_enrichment.py --resume                  # resume from checkpoint
+    python run_enrichment.py --legacy                  # use old full-schema mode
 """
 
 import sys
@@ -24,8 +26,10 @@ from pipeline.config import OPENAI_API_KEY, OUTPUT_DIR, INTERMEDIATE_DIR
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-ENRICHMENT_OUTPUT = OUTPUT_DIR / "players_enriched.json"
+NARRATIVES_OUTPUT = OUTPUT_DIR / "players_narratives.json"
+ENRICHMENT_OUTPUT = OUTPUT_DIR / "players_enriched.json"  # backward compat
 CHECKPOINT_FILE = INTERMEDIATE_DIR / "enrichment_checkpoint.json"
+MERGED_PATH = OUTPUT_DIR / "players_merged.json"
 
 WC_2026_HOST_CITIES = [
     "New York", "New Jersey", "Los Angeles", "Dallas", "Houston", "Atlanta",
@@ -34,69 +38,42 @@ WC_2026_HOST_CITIES = [
     "Vancouver", "Toronto",
 ]
 
-SYSTEM_PROMPT = """\
-You are an elite football (soccer) researcher and storyteller building the \
-ultimate player database for an AI assistant called "El Capi" — the captain \
-of World Cup 2026 knowledge. Your job is to make every player come alive with \
-rich, accurate, fascinating data that fuels great conversations with fans.
+# ─── Narrative-Only System Prompt ────────────────────────────────────────
+# GPT receives player facts as CONTEXT but only returns narrative content.
+# This prevents GPT from overwriting verified factual data.
 
-Given a player's name and metadata, return a comprehensive JSON profile.
+NARRATIVE_SYSTEM_PROMPT = """\
+You are an elite football (soccer) storyteller building narrative content for \
+an AI assistant called "El Capi" — the captain of World Cup 2026 knowledge.
+
+You will receive a player's VERIFIED FACTS (name, DOB, club, position, etc.) \
+as context. Your job is to write compelling narrative content ONLY — do NOT \
+repeat or modify the factual fields.
 
 IMPORTANT RULES:
-- Be ACCURATE. If you're unsure, use null — never fabricate stats or stories.
+- Be ACCURATE. If you're unsure, use null — never fabricate stories or stats.
 - Be SPECIFIC. "Scored a hat-trick vs Brazil in 2023 Copa America semifinal" \
   beats "scored important goals".
 - Be BILINGUAL. Provide EN + ES for all narrative fields.
 - Be a STORYTELLER. Origin stories, turning points, human moments.
+- Do NOT return identity facts (DOB, height, nationality, etc.) — we already have those.
+- Do NOT return career facts (club, position, market value, etc.) — we already have those.
 
-Return ONLY valid JSON with this exact structure:
+Return ONLY valid JSON with these NARRATIVE sections:
 
 {
-  "identity": {
-    "full_legal_name": "Complete legal/birth name",
-    "known_as": "Most common name fans use",
-    "nicknames": [{"name": "La Pulga", "meaning": "The Flea — for his small stature and agility", "language": "es"}],
-    "date_of_birth": "YYYY-MM-DD",
-    "birth_city": "City",
-    "birth_country": "Country",
-    "nationality_primary": "Country",
-    "nationality_secondary": "Country or null if not dual-national",
-    "languages_spoken": ["Spanish", "English"],
-    "height_cm": 170,
-    "preferred_foot": "Left/Right/Both"
-  },
-
-  "career": {
-    "current_club": "Club name",
-    "current_league": "League name",
-    "current_jersey_number": 10,
-    "position_primary": "Centre-Forward",
-    "position_secondary": "Right Winger or null",
-    "career_trajectory": [
-      {"club": "Club name", "years": "2004-2021", "note_en": "Brief note", "note_es": "Nota breve"}
-    ],
-    "international_caps": 178,
-    "international_goals": 106,
-    "international_debut": {"date": "2005-08-17", "opponent": "Hungary", "age": 18},
-    "records_held": ["All-time top scorer for Argentina", "Most Ballon d'Or awards (8)"],
-    "major_trophies": [
-      {"trophy": "FIFA World Cup", "year": 2022, "team": "Argentina"},
-      {"trophy": "Champions League", "year": 2015, "team": "FC Barcelona"}
-    ]
-  },
-
   "playing_style": {
-    "style_summary_en": "2-3 sentences on how they play — be specific about what makes them unique",
+    "style_summary_en": "2-3 sentences on how they play — specific about what makes them unique",
     "style_summary_es": "Same in Spanish",
     "signature_moves": ["Inside-left cut from the right wing", "Low-driven free kicks"],
     "strengths": ["Close dribbling in tight spaces", "Vision and through-balls"],
     "weaknesses": ["Aerial duels", "Defensive work rate"],
-    "comparable_to": {"player": "Diego Maradona", "reason_en": "Similar low center of gravity, dribbling genius, Argentine icon", "reason_es": "Similar centro de gravedad bajo, genio del regate, ícono argentino"},
-    "best_partnership": {"player": "Neymar / Luis Suárez", "context_en": "MSN trident at Barcelona 2014-17 — one of the greatest attacking trios ever", "context_es": "Tridente MSN en el Barcelona 2014-17 — uno de los mejores tridentes ofensivos de la historia"}
+    "comparable_to": {"player": "Diego Maradona", "reason_en": "...", "reason_es": "..."},
+    "best_partnership": {"player": "Neymar / Luis Suárez", "context_en": "...", "context_es": "..."}
   },
 
   "story": {
-    "origin_story_en": "2-4 sentences about their path to football — childhood, family, hardships, discovery. Make it compelling.",
+    "origin_story_en": "2-4 sentences about their path to football — childhood, family, hardships. Make it compelling.",
     "origin_story_es": "Same in Spanish",
     "breakthrough_moment": {
       "description_en": "The specific game/event that made them famous",
@@ -104,121 +81,156 @@ Return ONLY valid JSON with this exact structure:
       "date": "YYYY-MM-DD or approximate",
       "context": "League match / World Cup / etc"
     },
-    "career_defining_quote_by_player": {"quote_en": "What they said", "quote_es": "Lo que dijeron", "context": "When/where they said it"},
-    "famous_quote_about_player": {"quote_en": "What someone said about them", "quote_es": "Lo que alguien dijo", "attributed_to": "Pep Guardiola"},
-    "biggest_controversy": {"description_en": "Brief description or null", "description_es": "Descripción breve o null"},
+    "career_defining_quote_by_player": {"quote_en": "...", "quote_es": "...", "context": "When/where"},
+    "famous_quote_about_player": {"quote_en": "...", "quote_es": "...", "attributed_to": "Person"},
+    "biggest_controversy": {"description_en": "Brief or null", "description_es": "Same or null"},
     "career_summary_en": "3-4 sentence career narrative — arc, peaks, legacy",
     "career_summary_es": "Same in Spanish"
   },
 
   "personality": {
-    "celebration_style": "Arms crossed / finger point to sky / knee slide — describe their iconic celebration",
-    "superstitions_rituals": ["Always enters the pitch right foot first", "Touches the grass before kickoff"],
-    "off_field_interests": ["Fashion", "Gaming", "Music production"],
-    "charitable_work": "Foundation name and cause, or brief description, or null",
-    "tattoo_meanings": ["Right arm: sleeve of family portraits", "Calf: World Cup trophy"],
-    "social_media": {
-      "instagram": "@handle or null",
-      "twitter": "@handle or null",
-      "tiktok": "@handle or null",
-      "followers_approx": "500M across platforms"
-    },
-    "fun_facts": [
-      "Was diagnosed with growth hormone deficiency at age 10 — Barcelona paid for his treatment",
-      "His contract with Barcelona was first written on a napkin",
-      "Holds the record for most goals in a calendar year (91 in 2012)"
-    ],
-    "music_taste": "Known to listen to cumbia and reggaeton, or null",
-    "fashion_brands": "Nike athlete, has own clothing line with Adidas, or null"
+    "celebration_style": "Describe their iconic celebration",
+    "superstitions_rituals": ["Always enters right foot first"],
+    "off_field_interests": ["Fashion", "Gaming"],
+    "charitable_work": "Foundation/cause or null",
+    "tattoo_meanings": ["Right arm: family portraits"],
+    "social_media": {"instagram": "@handle", "twitter": "@handle", "tiktok": "@handle", "followers_approx": "500M"},
+    "fun_facts": ["Specific interesting facts about the player"],
+    "music_taste": "Known musical preferences or null",
+    "fashion_brands": "Endorsements or null"
   },
 
   "world_cup_2026": {
-    "previous_wc_appearances": [
-      {"year": 2022, "result": "Winner", "notable": "Scored twice in the final vs France"}
-    ],
-    "wc_qualifying_contribution": "5 goals and 3 assists in CONMEBOL qualifiers",
-    "tournament_role_en": "Expected role and importance for their team",
+    "previous_wc_appearances": [{"year": 2022, "result": "Winner", "notable": "Scored in final"}],
+    "wc_qualifying_contribution": "Goals and assists in qualifiers",
+    "tournament_role_en": "Expected role for their team",
     "tournament_role_es": "Same in Spanish",
-    "narrative_arc_en": "Is this their last WC? First? Redemption? What's the story going in?",
+    "narrative_arc_en": "Last WC? First? Redemption? What's the story?",
     "narrative_arc_es": "Same in Spanish",
-    "host_city_connection": "Any connection to the 16 host cities (US/Mexico/Canada) — played MLS, born nearby, etc. Null if none.",
-    "injury_fitness_status": "Current fitness status heading into 2026, or null if healthy"
+    "host_city_connection": "Connection to host cities or null",
+    "injury_fitness_status": "Current fitness or null if healthy"
   },
 
   "big_game_dna": {
     "world_cup_goals": 13,
     "champions_league_goals": 129,
-    "derby_performances_en": "Brief note on how they perform in big rivalries",
+    "derby_performances_en": "How they perform in rivalries",
     "derby_performances_es": "Same in Spanish",
-    "clutch_moments": [
-      "92nd-minute winner vs Real Madrid in 2017 El Clásico",
-      "Hat-trick in 2022 World Cup Final"
-    ]
-  },
-
-  "market": {
-    "estimated_value_eur": "€50M",
-    "endorsement_brands": ["Adidas", "Pepsi", "Hard Rock Cafe"],
-    "agent": "Jorge Messi / agency name or null"
+    "clutch_moments": ["92nd-minute winner vs Real Madrid in 2017"]
   },
 
   "injury_history": {
-    "notable_injuries": [
-      {"injury": "Knee ligament tear", "date": "2020-11", "months_out": 3}
-    ],
+    "notable_injuries": [{"injury": "Knee ligament tear", "date": "2020-11", "months_out": 3}],
     "injury_prone": false
   },
 
-  "meta": {
-    "data_confidence": "high/medium/low",
-    "data_gaps": ["Social media handles not confirmed", "Exact qualifying stats uncertain"]
+  "identity_extras": {
+    "nicknames": [{"name": "La Pulga", "meaning": "The Flea", "language": "es"}],
+    "nationality_secondary": "Dual nationality country or null",
+    "languages_spoken": ["Spanish", "English"]
+  },
+
+  "career_extras": {
+    "position_secondary": "Second position or null",
+    "international_debut": {"date": "2005-08-17", "opponent": "Hungary", "age": 18},
+    "records_held": ["Record description"],
+    "endorsement_brands": ["Adidas", "Pepsi"]
   }
 }
 
 HOST CITIES for World Cup 2026 (check connections): """ + ", ".join(WC_2026_HOST_CITIES) + """
 
-If you don't know a field, set it to null. For arrays, use empty [] if nothing known. \
+If you don't know a field, set it to null. For arrays, use empty []. \
 ACCURACY over completeness — always.\
 """
 
 
-def enrich_player(name: str, metadata: dict) -> dict | None:
-    """Call ChatGPT to enrich a single player profile."""
-    context_parts = [f"Player: {name}"]
-    if metadata.get("current_club_name"):
-        context_parts.append(f"Club: {metadata['current_club_name']}")
-    if metadata.get("nationality"):
-        context_parts.append(f"Nationality: {metadata['nationality']}")
-    if metadata.get("position"):
-        context_parts.append(f"Position: {metadata['position']}")
-    if metadata.get("sub_position"):
-        context_parts.append(f"Detailed position: {metadata['sub_position']}")
-    if metadata.get("date_of_birth"):
-        context_parts.append(f"DOB: {metadata['date_of_birth']}")
-    if metadata.get("height_cm"):
-        context_parts.append(f"Height: {metadata['height_cm']}cm")
-    if metadata.get("market_value_eur"):
-        context_parts.append(f"Market value: €{metadata['market_value_eur']:,}")
-    if metadata.get("wc_team_code"):
-        context_parts.append(f"World Cup 2026 national team: {metadata['wc_team_code']}")
-    if metadata.get("foot"):
-        context_parts.append(f"Preferred foot: {metadata['foot']}")
-    if metadata.get("country_of_birth"):
-        context_parts.append(f"Country of birth: {metadata['country_of_birth']}")
-    if metadata.get("city_of_birth"):
-        context_parts.append(f"City of birth: {metadata['city_of_birth']}")
+def build_fact_context(player_facts: dict) -> str:
+    """Build a context message from merged facts so GPT has accurate info to base narratives on."""
+    parts = [f"Player: {player_facts.get('name', 'Unknown')}"]
 
-    user_msg = "\n".join(context_parts)
+    fields = player_facts.get("fields", {})
 
+    def fv(field_name: str):
+        return fields.get(field_name, {}).get("value")
+
+    if fv("date_of_birth"):
+        parts.append(f"DOB: {fv('date_of_birth')}")
+    if fv("nationality"):
+        parts.append(f"Nationality: {fv('nationality')}")
+    if fv("position"):
+        parts.append(f"Position: {fv('position')}")
+    if fv("current_club"):
+        parts.append(f"Club: {fv('current_club')}")
+    if fv("current_league"):
+        parts.append(f"League: {fv('current_league')}")
+    if fv("height_cm"):
+        parts.append(f"Height: {fv('height_cm')}cm")
+    if fv("market_value_eur"):
+        parts.append(f"Market value: €{fv('market_value_eur'):,}")
+    if fv("jersey_number"):
+        parts.append(f"Jersey: #{fv('jersey_number')}")
+    if player_facts.get("wc_team_code"):
+        parts.append(f"World Cup 2026 team: {player_facts['wc_team_code']}")
+    if fv("international_caps"):
+        parts.append(f"International caps: {fv('international_caps')}")
+    if fv("international_goals"):
+        parts.append(f"International goals: {fv('international_goals')}")
+    if fv("career_trajectory"):
+        traj = fv("career_trajectory")
+        if isinstance(traj, list) and traj:
+            clubs = [t.get("club", "?") for t in traj[:5]]
+            parts.append(f"Career clubs: {' → '.join(clubs)}")
+    if fv("major_trophies"):
+        trophies = fv("major_trophies")
+        if isinstance(trophies, list) and trophies:
+            parts.append(f"Notable trophies: {len(trophies)} total")
+
+    parts.append("")
+    parts.append("Write NARRATIVE content only. Do NOT repeat facts above — they're already stored.")
+
+    return "\n".join(parts)
+
+
+def build_flat_context(player: dict) -> str:
+    """Build context from flat canonical player (fallback when merged data not available)."""
+    parts = [f"Player: {player.get('name', 'Unknown')}"]
+    if player.get("current_club_name"):
+        parts.append(f"Club: {player['current_club_name']}")
+    if player.get("nationality"):
+        parts.append(f"Nationality: {player['nationality']}")
+    if player.get("position"):
+        parts.append(f"Position: {player['position']}")
+    if player.get("sub_position"):
+        parts.append(f"Detailed position: {player['sub_position']}")
+    if player.get("date_of_birth"):
+        parts.append(f"DOB: {player['date_of_birth']}")
+    if player.get("height_cm"):
+        parts.append(f"Height: {player['height_cm']}cm")
+    if player.get("market_value_eur"):
+        parts.append(f"Market value: €{player['market_value_eur']:,}")
+    if player.get("wc_team_code"):
+        parts.append(f"World Cup 2026 team: {player['wc_team_code']}")
+    if player.get("foot"):
+        parts.append(f"Preferred foot: {player['foot']}")
+
+    parts.append("")
+    parts.append("Write NARRATIVE content only. Do NOT repeat facts above — they're already stored.")
+
+    return "\n".join(parts)
+
+
+def enrich_player_narrative(context_msg: str) -> dict | None:
+    """Call GPT to generate narrative content for a player."""
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
+                {"role": "system", "content": NARRATIVE_SYSTEM_PROMPT},
+                {"role": "user", "content": context_msg},
             ],
             temperature=0.3,
-            max_tokens=4000,
+            max_tokens=3000,
             response_format={"type": "json_object"},
         )
 
@@ -236,7 +248,7 @@ def enrich_player(name: str, metadata: dict) -> dict | None:
         return parsed
 
     except json.JSONDecodeError:
-        print(f"JSON_PARSE_FAIL", end=" ")
+        print("JSON_PARSE_FAIL", end=" ")
         return None
     except Exception as e:
         print(f"ERROR({type(e).__name__})", end=" ")
@@ -260,42 +272,77 @@ def run_enrichment(
     single_player: str | None = None,
     batch_size: int = 700,
     resume: bool = False,
+    use_merged: bool = True,
 ):
+    """
+    Run narrative enrichment.
+
+    Args:
+        use_merged: If True, reads from players_merged.json (preferred — richer context).
+                    If False, reads from players_canonical_latest.json (flat fallback).
+    """
     print("=" * 60)
-    print("  EL CAPI — Full Player Enrichment (v2)")
+    print("  EL CAPI — Narrative Enrichment (v3 — Narrative-Only)")
     print("=" * 60)
+    print("  Mode: NARRATIVE-ONLY (facts come from merge step)")
+    print()
 
-    latest_path = OUTPUT_DIR / "players_canonical_latest.json"
-    if not latest_path.exists():
-        print(f"  ERROR: Run the pipeline first. Missing: {latest_path}")
-        sys.exit(1)
+    # ── Load player data ──
+    merged_players: list[dict] = []
+    flat_players: list[dict] = []
 
-    with open(latest_path) as f:
-        players = json.load(f)
+    if use_merged and MERGED_PATH.exists():
+        print(f"  Loading merged facts: {MERGED_PATH}")
+        with open(MERGED_PATH) as f:
+            merged_players = json.load(f)
+        print(f"  Merged players: {len(merged_players)}")
+    else:
+        print(f"  Merged data not available — using flat canonical")
+        use_merged = False
 
-    print(f"  Loaded {len(players):,} players from canonical list")
+    if not use_merged:
+        latest_path = OUTPUT_DIR / "players_canonical_latest.json"
+        if not latest_path.exists():
+            print(f"  ERROR: Run the pipeline first. Missing: {latest_path}")
+            sys.exit(1)
+        with open(latest_path) as f:
+            flat_players = json.load(f)
+        if wc_only:
+            flat_players = [p for p in flat_players if p.get("in_wc_squad")]
+        print(f"  Flat canonical players: {len(flat_players)}")
 
+    players_to_process = merged_players if use_merged else flat_players
+
+    # ── Filter ──
     if single_player:
         query = unidecode(single_player).lower()
-        players = [p for p in players if query in unidecode(p.get("name") or "").lower()]
-        if not players:
+        players_to_process = [
+            p for p in players_to_process
+            if query in unidecode(p.get("name") or "").lower()
+        ]
+        if not players_to_process:
             print(f"  Player '{single_player}' not found.")
             return
-        print(f"  Enriching single player: {players[0]['name']}")
-    elif wc_only:
-        players = [p for p in players if p.get("in_wc_squad")]
-        print(f"  Filtered to {len(players)} WC 2026 squad players")
+        print(f"  Enriching single player: {players_to_process[0]['name']}")
 
-    checkpoint = load_checkpoint() if resume else {"completed": [], "enriched_data": {}, "total_tokens": 0, "total_cost_usd": 0.0}
+    print(f"  Players to enrich: {len(players_to_process)}")
+
+    # ── Resume support ──
+    checkpoint = load_checkpoint() if resume else {
+        "completed": [], "enriched_data": {}, "total_tokens": 0, "total_cost_usd": 0.0
+    }
     completed_set = set(checkpoint["completed"])
 
-    remaining = [p for p in players if p.get("source_id") not in completed_set]
+    remaining = [
+        p for p in players_to_process
+        if str(p.get("source_id", "")) not in completed_set
+    ]
     to_process = remaining[:batch_size]
 
     print(f"  Already enriched: {len(completed_set)}")
     print(f"  Remaining: {len(remaining)}")
     print(f"  Processing this batch: {len(to_process)}")
-    print(f"  Estimated cost: ~${len(to_process) * 0.003:.2f}")
+    print(f"  Estimated cost: ~${len(to_process) * 0.002:.2f}")
     print()
 
     start_time = time.time()
@@ -304,30 +351,35 @@ def run_enrichment(
 
     for i, player in enumerate(to_process):
         name = player.get("name", "Unknown")
-        pid = player.get("source_id", "?")
+        pid = str(player.get("source_id", "?"))
         team = player.get("wc_team_code", "")
         team_tag = f" [{team}]" if team else ""
         print(f"  [{i+1}/{len(to_process)}] {name}{team_tag}...", end=" ", flush=True)
 
-        enriched = enrich_player(name, player)
-        if enriched:
-            tokens = enriched.get("_tokens", {})
+        # Build context from merged or flat data
+        if use_merged:
+            context = build_fact_context(player)
+        else:
+            context = build_flat_context(player)
+
+        narrative = enrich_player_narrative(context)
+        if narrative:
+            tokens = narrative.get("_tokens", {})
             total_tok = tokens.get("total", 0)
             cost = total_tok * 0.00000015 + tokens.get("completion", 0) * 0.0000006
 
             checkpoint["enriched_data"][pid] = {
                 "source_id": pid,
                 "name": name,
-                "wc_team_code": player.get("wc_team_code"),
-                **enriched,
+                "wc_team_code": team,
+                **narrative,
                 "enriched_at": datetime.now().isoformat(),
             }
             checkpoint["completed"].append(pid)
             checkpoint["total_tokens"] = checkpoint.get("total_tokens", 0) + total_tok
             checkpoint["total_cost_usd"] = checkpoint.get("total_cost_usd", 0.0) + cost
 
-            confidence = enriched.get("meta", {}).get("data_confidence", "?")
-            print(f"OK ({confidence}, {total_tok} tok)")
+            print(f"OK ({total_tok} tok)")
             success += 1
         else:
             print("FAILED")
@@ -344,18 +396,28 @@ def run_enrichment(
 
     save_checkpoint(checkpoint)
 
+    # ── Write narrative output ──
+    narratives = list(checkpoint["enriched_data"].values())
+
+    print(f"\n  Writing narratives: {NARRATIVES_OUTPUT}")
+    with open(NARRATIVES_OUTPUT, "w", encoding="utf-8") as f:
+        json.dump(narratives, f, ensure_ascii=False, indent=2, default=str)
+
+    # ── Also write backward-compatible enriched format ──
+    # The combine step can read either file; this ensures old workflows still work.
+    print(f"  Writing backward-compat enriched: {ENRICHMENT_OUTPUT}")
     with open(ENRICHMENT_OUTPUT, "w", encoding="utf-8") as f:
-        json.dump(list(checkpoint["enriched_data"].values()), f, ensure_ascii=False, indent=2, default=str)
+        json.dump(narratives, f, ensure_ascii=False, indent=2, default=str)
 
     elapsed = time.time() - start_time
     print(f"\n{'=' * 60}")
-    print(f"  ENRICHMENT COMPLETE")
+    print(f"  NARRATIVE ENRICHMENT COMPLETE")
     print(f"  Players enriched: {success} ok, {failed} failed")
     print(f"  Total in database: {len(checkpoint['enriched_data'])}")
     print(f"  Tokens used: {checkpoint['total_tokens']:,}")
     print(f"  Cost: ${checkpoint['total_cost_usd']:.3f}")
     print(f"  Time: {elapsed/60:.1f} min")
-    print(f"  Output: {ENRICHMENT_OUTPUT}")
+    print(f"  Output: {NARRATIVES_OUTPUT}")
     print(f"{'=' * 60}")
 
 
@@ -377,4 +439,9 @@ if __name__ == "__main__":
         if idx + 1 < len(args):
             batch = int(args[idx + 1])
 
-    run_enrichment(wc_only=wc_only, single_player=single, batch_size=batch, resume=do_resume)
+    run_enrichment(
+        wc_only=wc_only,
+        single_player=single,
+        batch_size=batch,
+        resume=do_resume,
+    )

@@ -58,6 +58,15 @@ def esc_text_array(val) -> str:
     return "ARRAY[" + ",".join(f"'{i}'" for i in items) + "]::text[]"
 
 
+def esc_jsonb(val) -> str:
+    """Escape a value for JSONB column (list or dict → jsonb)."""
+    if val is None:
+        return "NULL"
+    if isinstance(val, list) or isinstance(val, dict):
+        return "'" + json.dumps(val, ensure_ascii=False).replace("'", "''") + "'::jsonb"
+    return "'" + json.dumps(val, ensure_ascii=False).replace("'", "''") + "'::jsonb"
+
+
 def parse_value_eur(market: dict) -> str:
     """Parse market value to bigint EUR."""
     val = market.get("estimated_value_eur") or market.get("market_value")
@@ -147,7 +156,7 @@ def generate_sql():
     {esc(ident.get('date_of_birth'))}, {esc(ident.get('birth_city'))}, {esc(ident.get('birth_country'))},
     {esc(ident.get('height_cm'))}, {esc(ident.get('preferred_foot'))},
     {esc(ident.get('nationality_primary') or 'Unknown')}, {esc(ident.get('nationality_secondary'))},
-    {esc_text_array(ident.get('languages_spoken'))}, {esc(ident.get('nicknames', []))},
+    {esc_text_array(ident.get('languages_spoken'))}, {esc_jsonb(ident.get('nicknames', []))},
     {esc(story.get('origin_story_en'))}, {esc(story.get('origin_story_es'))},
     {esc(story.get('career_summary_en'))}, {esc(story.get('career_summary_es'))},
     {esc(story.get('breakthrough_moment'))}, {esc(story.get('career_defining_quote_by_player') or story.get('career_defining_quote'))},
@@ -160,7 +169,7 @@ def generate_sql():
     {esc_text_array(personality.get('fun_facts'))},
     {esc(personality.get('social_media', {}))},
     {esc(personality.get('music_taste'))}, {esc(personality.get('fashion_brands'))},
-    {esc(injury.get('injury_prone'))}, {esc(injury.get('notable_injuries', []))},
+    {esc(injury.get('injury_prone'))}, {esc_jsonb(injury.get('notable_injuries', []))},
     {esc(ident.get('photo_url'))},
     {esc(meta.get('data_confidence'))}, {esc_text_array(meta.get('data_gaps'))},
     {esc(p.get('enriched_at'))}
@@ -203,7 +212,7 @@ def generate_sql():
     {esc(career.get('position_primary'))}, {esc(career.get('position_secondary'))},
     {esc(career.get('contract_expires'))}, {esc(career.get('agent'))},
     {parse_value_eur(market)}, {esc_text_array(market.get('endorsement_brands'))},
-    {esc(career.get('career_trajectory', []))},
+    {esc_jsonb(career.get('career_trajectory', []))},
     {esc_text_array(career.get('major_trophies'))}, {esc_text_array(career.get('records_held'))},
     {esc(style.get('style_summary_en'))}, {esc(style.get('style_summary_es'))},
     {esc_text_array(style.get('signature_moves'))},
@@ -232,8 +241,8 @@ def generate_sql():
     {esc(wc.get('injury_fitness_status'))}, {esc(wc.get('wc_qualifying_contribution'))},
     {esc(bgd.get('world_cup_goals', 0))}, {esc(bgd.get('champions_league_goals', 0))},
     {esc(bgd.get('derby_performances_en'))}, {esc(bgd.get('derby_performances_es'))},
-    {esc(bgd.get('clutch_moments', []))},
-    {esc(wc.get('previous_wc_appearances', []))}, {esc(wc.get('host_city_connection'))}
+    {esc_jsonb(bgd.get('clutch_moments', []))},
+    {esc_jsonb(wc.get('previous_wc_appearances', []))}, {esc(wc.get('host_city_connection'))}
 ) ON CONFLICT (player_id) DO NOTHING;""")
 
     # ─── Write SQL files ──────────────────────────────────────────
