@@ -2,6 +2,8 @@
 
 Detailed documentation of every stage in the El Capi data pipeline. For quick start, see [README.md](README.md).
 
+> **Note (March 14, 2026):** This document describes the classic 7-stage pipeline which processes **632 enriched WC players** through `players_golden.json`. The production warehouse now has **1,176 players** — the additional 538 came from squad build operations (WC 2026 projected squads from API-Football) and staging promotion, which bypass the enrichment/verification stages. See `DATA_LINEAGE.md` for the full picture.
+
 ---
 
 ## Stage 1: Ingest
@@ -351,10 +353,10 @@ Pushes enriched player data directly to Supabase via the REST API, bypassing the
 
 | Table | Row Count | Conflict Resolution |
 |-------|-----------|-------------------|
-| `players` | 632 | Upsert on `id` |
-| `player_career` | 632 | Upsert on `player_id` |
-| `player_tournament` | 632 | Upsert on `player_id` |
-| `player_aliases` | ~1,148 | Insert, skip duplicates |
+| `players` | 1,176 (632 from pipeline + 538 from squad build/APIF) | Upsert on `id` |
+| `player_career` | 1,176 | Upsert on `player_id` |
+| `player_tournament` | 1,176 | Upsert on `player_id` |
+| `player_aliases` | ~1,221+ | Insert, skip duplicates |
 
 ### Data Transformations
 

@@ -1,8 +1,10 @@
 # El Capi — Data Sources
 
-> **Audience**: Engineering / Data Team  
-> **Last verified**: March 12, 2026  
+> **Audience**: Engineering / Data Team
+> **Last verified**: March 12, 2026
 > **Purpose**: Complete reference for every data source feeding El Capi — where it comes from, how we connect, what fields we use, where the data lands, and what's missing.
+
+> **Note (March 14, 2026):** The "632 players" counts in this document reflect the classic pipeline output (`players_golden.json`). The production warehouse now has **1,176 players** across 42 WC squads — the additional 538 came from squad build + APIF sync operations that bypass the enrichment pipeline. Warehouse table counts are in `DATA_LINEAGE.md`.
 
 ---
 
@@ -391,10 +393,10 @@ players_canonical.json → run_verification.py → gpt-4o API
 
 | Table | Records | PK | Purpose |
 |-------|---------|-----|---------|
-| `players` | 632 | `id` (UUID) | Canonical identity, story, personality |
-| `player_career` | 632 | `player_id` (FK) | Club, league, position, style, market value |
-| `player_tournament` | 632 | `player_id` (FK) | WC 2026 squad data, caps, goals, narrative |
-| `player_aliases` | 1,148 | `id` (serial) | Cross-source name mapping |
+| `players` | 1,176 | `id` (UUID) | Canonical identity, story, personality, `data_confidence` |
+| `player_career` | 1,176 | `player_id` (FK) | Club, league, position, style, market value |
+| `player_tournament` | 1,176 | `player_id` (FK) | WC 2026 squad data, caps, goals, narrative |
+| `player_aliases` | 1,221+ | `id` (serial) | Cross-source name mapping |
 | `schema_metadata` | 63 | `id` (serial) | Column descriptions for Analytics Mode |
 | `pipeline_runs` | 0 | `id` (UUID) | Audit trail (not yet populated) |
 

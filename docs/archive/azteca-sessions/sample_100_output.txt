@@ -1,0 +1,432 @@
+========== Part A: setseed + create sample_100 ==========
+ setseed 
+---------
+ 
+(1 row)
+
+SELECT 100
+========== Part A: Full 100 rows ORDER BY name ==========
+     id      |          name           |          name_short           | date_of_birth |    nationality     | nationality_secondary |  position  |    sub_position    | foot  | height_cm |                                         current_club_name                                          | jersey_number | market_value_eur |                                         photo_url                                         |   country_of_birth    |    city_of_birth    |                               transfermarkt_url                               
+-------------+-------------------------+-------------------------------+---------------+--------------------+-----------------------+------------+--------------------+-------+-----------+----------------------------------------------------------------------------------------------------+---------------+------------------+-------------------------------------------------------------------------------------------+-----------------------+---------------------+-------------------------------------------------------------------------------
+ apif_6053   | A. Bouzat               | A. Bouzat                     | 1994-03-28    | Argentina          |                       | Midfielder |                    |       |       173 | Velez Sarsfield                                                                                    |            26 |                  | https://media.api-sports.io/football/players/6053.png                                     | Argentina             | Bahía Blanca        | 
+ apif_527392 | A. Özcan                | F. Özcan                      | 2009-10-01    | Türkiye            |                       | Attacker   |                    |       |           | Gençlerbirliği S.K.                                                                                |               |                  | https://media.api-sports.io/football/players/527392.png                                   | Türkiye               | Ankara              | 
+ apif_278373 | A. Sandez               | G. Sandez                     | 2001-01-16    | Argentina          |                       | Defender   |                    |       |       179 | Rosario Central                                                                                    |             3 |                  | https://media.api-sports.io/football/players/278373.png                                   | Argentina             | Lanús               | 
+ 381206      | Adrián Riera            |                               | 1996-04-19    | Spain              |                       | Midfield   | Attacking Midfield | right |       178 | Panserraikos Serres                                                                                |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/381206-1739292241.jpg?lm=1         | Spain                 | Murcia              | https://www.transfermarkt.co.uk/adrian-riera/profil/spieler/381206
+ 518943      | Ahmed Yasser Rayan      |                               | 1998-01-24    | Egypt              |                       | Attack     | Centre-Forward     | right |       185 | Altay SK                                                                                           |               |          1200000 | https://img.a.transfermarkt.technology/portrait/header/518943-1556019282.jpg?lm=1         | Egypt                 | Kairo               | https://www.transfermarkt.co.uk/ahmed-yasser-rayan/profil/spieler/518943
+ apif_142289 | Aílson Tavares          |                               |               | Cape Verde Islands |                       | Midfielder |                    |       |           |                                                                                                    |             5 |                  | https://media.api-sports.io/football/players/142289.png                                   |                       |                     | 
+ 51164       | Aleksandrs Cauna        |                               | 1988-01-19    | Latvia             |                       | Midfield   | Defensive Midfield | left  |       175 | PFK CSKA Moskva                                                                                    |               |           300000 | https://img.a.transfermarkt.technology/portrait/header/51164-1471707744.jpg?lm=1          | UdSSR                 | Daugavpils          | https://www.transfermarkt.co.uk/aleksandrs-cauna/profil/spieler/51164
+ 16828       | Alessandro Potenza      |                               | 1984-03-08    | Italy              |                       | Defender   | Centre-Back        | right |       185 | Catania FC                                                                                         |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/16828-1476880793.jpg?lm=1          | Italy                 | Apricena            | https://www.transfermarkt.co.uk/alessandro-potenza/profil/spieler/16828
+ 18644       | Álvaro Negredo          |                               | 1985-08-20    | Spain              |                       | Attack     | Centre-Forward     | left  |       186 | Cádiz CF                                                                                           |               |           300000 | https://img.a.transfermarkt.technology/portrait/header/18644-1663139293.jpg?lm=1          | Spain                 | Madrid              | https://www.transfermarkt.co.uk/alvaro-negredo/profil/spieler/18644
+ 142281      | Anthony Ujah            |                               | 1990-10-14    | Nigeria            |                       | Attack     | Centre-Forward     | right |       180 | 1. Fußballclub Union Berlin                                                                        |               |           750000 | https://img.a.transfermarkt.technology/portrait/header/142281-1665658131.jpg?lm=1         | Nigeria               | Ugbokolo            | https://www.transfermarkt.co.uk/anthony-ujah/profil/spieler/142281
+ apif_51001  | B. Bye                  | B. Bye                        | 1995-11-29    | USA                |                       | Defender   |                    |       |       183 | New England Revolution                                                                             |            15 |                  | https://media.api-sports.io/football/players/51001.png                                    | USA                   | Kalamazoo           | 
+ apif_429270 | Ben Brannan             | B. Brannan                    | 2007-01-30    | Scotland           |                       | Midfielder |                    |       |           | Kilmarnock                                                                                         |            26 |                  | https://media.api-sports.io/football/players/429270.png                                   | Scotland              |                     | 
+ 5406        | Benoît Pedretti         |                               | 1980-11-12    | France             |                       | Midfield   | Defensive Midfield | right |       178 | AS Nancy-Lorraine                                                                                  |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/5406-1517243197.jpg?lm=1           | France                | Audincourt          | https://www.transfermarkt.co.uk/benoit-pedretti/profil/spieler/5406
+ apif_6416   | C. Lattanzio            |                               |               |                    |                       | Attacker   |                    |       |           | San Martin S.J.                                                                                    |            11 |                  | https://media.api-sports.io/football/players/6416.png                                     |                       |                     | 
+ 66099       | Carles Planas           |                               | 1991-03-04    | Spain              |                       | Defender   | Left-Back          | left  |       175 | Girona Fútbol Club S. A. D.                                                                        |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/66099-1447160275.jpg?lm=1          | Spain                 | Sant Celoni         | https://www.transfermarkt.co.uk/carles-planas/profil/spieler/66099
+ 373300      | Cryzan                  |                               | 1996-07-07    | Brazil             |                       | Attack     | Centre-Forward     | both  |       190 | Clube Desportivo Santa Clara                                                                       |               |          3500000 | https://img.a.transfermarkt.technology/portrait/header/373300-1520764732.jpg?lm=1         | Brazil                | Sud Menucci         | https://www.transfermarkt.co.uk/cryzan/profil/spieler/373300
+ 259881      | Damian Szymański        |                               | 1995-06-16    | Poland             |                       | Midfield   | Defensive Midfield | right |       185 | Athlitiki Enosi Konstantinoupoleos                                                                 |               |          2000000 | https://img.a.transfermarkt.technology/portrait/header/259881-1754429147.png?lm=1         | Poland                | Kraśnik             | https://www.transfermarkt.co.uk/damian-szymanski/profil/spieler/259881
+ 269864      | Daniel Guimarães        |                               | 1987-04-18    | Brazil             |                       | Goalkeeper | Goalkeeper         | right |       189 | Clube Desportivo Nacional                                                                          |               |            25000 | https://img.a.transfermarkt.technology/portrait/header/269864-1534845524.jpg?lm=1         | Brazil                | Timoteo             | https://www.transfermarkt.co.uk/daniel-guimaraes/profil/spieler/269864
+ 22594       | Daniele Galloppa        |                               | 1985-05-15    | Italy              |                       | Midfield   | Central Midfield   | left  |       181 | Parma Calcio 1913                                                                                  |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/22594-1452590898.jpg?lm=1          | Italy                 | Roma                | https://www.transfermarkt.co.uk/daniele-galloppa/profil/spieler/22594
+ 241706      | Danny Williams          |                               | 1988-01-25    | England            |                       | Midfield   | Left Midfield      | left  |       175 | Dundee Football Club                                                                               |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | England               | Leigh               | https://www.transfermarkt.co.uk/danny-williams/profil/spieler/241706
+ 235274      | Dario Van den Buijs     |                               | 1995-09-12    | Belgium            |                       | Defender   | Centre-Back        | left  |       187 | RKC Waalwijk                                                                                       |               |           750000 | https://img.a.transfermarkt.technology/portrait/header/235274-1627302126.jpg?lm=1         | Belgium               | Lier                | https://www.transfermarkt.co.uk/dario-van-den-buijs/profil/spieler/235274
+ 1118495     | David Santos Daiber     |                               | 2007-01-10    | Portugal           |                       | Midfield   | Defensive Midfield | right |       185 | FC Bayern München                                                                                  |               |          1000000 | https://img.a.transfermarkt.technology/portrait/header/1118495-1726492665.png?lm=1        |                       |                     | https://www.transfermarkt.co.uk/david-santos-daiber/profil/spieler/1118495
+ 672248      | Denis Kovacevic         |                               | 2002-12-12    | Bosnia-Herzegovina |                       | Defender   | Left-Back          | left  |       181 | Istanbulspor                                                                                       |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/672248-1665480790.png?lm=1         | Austria               | Wien                | https://www.transfermarkt.co.uk/denis-kovacevic/profil/spieler/672248
+ 213894      | Dimitrios Bourous       |                               | 1993-02-23    | Greece             |                       | Attack     | Centre-Forward     | right |       183 | AEL Kalloni                                                                                        |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Greece                | Mytilini            | https://www.transfermarkt.co.uk/dimitrios-bourous/profil/spieler/213894
+ 160510      | Dimitrios Stamou        |                               | 1991-04-27    | Greece             |                       | Defender   | Centre-Back        | right |       185 | AO Platanias                                                                                       |               |           125000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Greece                | Thessaloniki        | https://www.transfermarkt.co.uk/dimitrios-stamou/profil/spieler/160510
+ 343870      | Dmitriy Pletnev         |                               | 1998-01-16    | Russia             |                       | Attack     | Left Winger        | right |       178 | AO FK Zenit Sankt-Peterburg                                                                        |               |           225000 | https://img.a.transfermarkt.technology/portrait/header/343870-1567155325.png?lm=1         | Russia                | St. Petersburg      | https://www.transfermarkt.co.uk/dmitriy-pletnev/profil/spieler/343870
+ 584769      | Dwight McNeil           |                               | 1999-11-22    | England            |                       | Attack     | Left Winger        | left  |       183 | Everton Football Club                                                                              |               |         20000000 | https://img.a.transfermarkt.technology/portrait/header/584769-1700651579.jpg?lm=1         | England               | Rochdale            | https://www.transfermarkt.co.uk/dwight-mcneil/profil/spieler/584769
+ apif_201354 | E. Makgopa              |                               |               | South Africa       |                       | Attacker   |                    |       |           |                                                                                                    |            23 |                  | https://media.api-sports.io/football/players/201354.png                                   |                       |                     | 
+ 876263      | Ejaita Ifoni            |                               | 2000-02-13    | Nigeria            |                       | Attack     | Centre-Forward     | right |       187 | RFC Seraing                                                                                        |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   |                       |                     | https://www.transfermarkt.co.uk/ejaita-ifoni/profil/spieler/876263
+ apif_414474 | F. Chávez               | F. Chávez                     | 2007-04-10    | Peru               |                       | Midfielder |                    |       |       171 | Bayern München                                                                                     |            38 |                  | https://media.api-sports.io/football/players/414474.png                                   | Germany               |                     | 
+ apif_50749  | F. Picault              | F. Picault                    | 1991-02-23    | Haiti              |                       | Attacker   |                    |       |       173 | Vancouver Whitecaps                                                                                |               |                  | https://media.api-sports.io/football/players/50749.png                                    | USA                   | New York            | 
+ 187601      | Fabian Sporkslede       |                               | 1993-08-03    | Suriname           |                       | Defender   | Right-Back         | right |       178 | RKC Waalwijk                                                                                       |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/187601-1635094291.png?lm=1         | Netherlands           | Amstelveen          | https://www.transfermarkt.co.uk/fabian-sporkslede/profil/spieler/187601
+ apif_389035 | Farid Alfa-Ruprecht     | F. Alfa-Ruprecht              | 2006-03-28    | Germany            |                       | Attacker   |                    |       |       175 | Bayer Leverkusen                                                                                   |               |                  | https://media.api-sports.io/football/players/389035.png                                   | Germany               | Hamburg             | 
+ 746753      | Frankie Maguire         |                               | 2003-07-29    | England            |                       | Midfield   | Central Midfield   |       |       175 | Sheffield United                                                                                   |               |                  | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   |                       |                     | https://www.transfermarkt.co.uk/frankie-maguire/profil/spieler/746753
+ 278648      | Furkan Simsek           |                               | 1997-07-17    | Turkey             |                       | Midfield   | Central Midfield   | left  |       185 | Çaykur Rizespor Kulübü                                                                             |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/278648-1478269943.jpg?lm=1         | Germany               | Höxter              | https://www.transfermarkt.co.uk/furkan-simsek/profil/spieler/278648
+ 627224      | Gabriel Silva           |                               | 2002-03-22    | Brazil             |                       | Attack     | Left Winger        | right |       177 | Clube Desportivo Santa Clara                                                                       |               |          4000000 | https://img.a.transfermarkt.technology/portrait/header/627224-1598272630.jpg?lm=1         | Brazil                | Ribeirão Preto      | https://www.transfermarkt.co.uk/gabriel-silva/profil/spieler/627224
+ 42513       | Gary Hooper             |                               | 1988-01-26    | England            |                       | Attack     | Centre-Forward     | right |       177 | Norwich City                                                                                       |               |           300000 | https://img.a.transfermarkt.technology/portrait/header/s_42513_1123_2013_08_05_1.jpg?lm=1 | England               | Loughton            | https://www.transfermarkt.co.uk/gary-hooper/profil/spieler/42513
+ 265266      | Gautam Kalpoe           |                               | 1991-09-19    | Netherlands        |                       | Defender   | Centre-Back        | right |       188 | Nooit Opgeven Altijd Doorzetten Aangenaam Door Vermaak En Nuttig Door Ontspanning Combinatie Breda |               |            25000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Netherlands           | Rotterdam           | https://www.transfermarkt.co.uk/gautam-kalpoe/profil/spieler/265266
+ 254063      | Giannis Stamatakis      |                               | 1994-06-26    | Greece             |                       | Midfield   | Attacking Midfield | right |       179 | Panathinaikos Athlitikos Omilos                                                                    |               |           125000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Greece                | Larymna             | https://www.transfermarkt.co.uk/giannis-stamatakis/profil/spieler/254063
+ 550492      | Giorgi Gagua            |                               | 2001-10-10    | Georgia            |                       | Attack     | Centre-Forward     | right |       193 | Deportivo Alavés S. A. D.                                                                          |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/550492-1664571546.jpg?lm=1         | Georgia               | Tiflis              | https://www.transfermarkt.co.uk/giorgi-gagua/profil/spieler/550492
+ 62751       | Giuseppe De Luca        |                               | 1991-10-11    | Italy              |                       | Attack     | Centre-Forward     | both  |       168 | Atalanta Bergamasca Calcio S.p.a.                                                                  |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/62751-1641772772.jpg?lm=1          | Italy                 | Angera              | https://www.transfermarkt.co.uk/giuseppe-de-luca/profil/spieler/62751
+ 718312      | Hamzat Ojediran         |                               | 2003-11-14    | Nigeria            |                       | Midfield   | Defensive Midfield | right |       180 | Racing Club de Lens                                                                                |               |          1000000 | https://img.a.transfermarkt.technology/portrait/header/718312-1723133488.jpg?lm=1         | Nigeria               | Lagos               | https://www.transfermarkt.co.uk/hamzat-ojediran/profil/spieler/718312
+ 567148      | Harry Stone             |                               | 2002-04-20    | Scotland           |                       | Goalkeeper | Goalkeeper         | right |       191 | Heart of Midlothian Football Club                                                                  |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/567148-1757443144.jpg?lm=1         | Scotland              | Edinburgh           | https://www.transfermarkt.co.uk/harry-stone/profil/spieler/567148
+ apif_313025 | Hugo Rincón             | H. Rincón Lumbreras           | 2003-01-27    | Spain              |                       | Defender   |                    |       |       183 | Athletic Club                                                                                      |               |                  | https://media.api-sports.io/football/players/313025.png                                   | Spain                 | Valtierra           | 
+ apif_826    | I. Diveev               | I. Diveev                     | 1999-09-27    | Russia             |                       | Defender   |                    |       |       194 | CSKA Moscow                                                                                        |            78 |                  | https://media.api-sports.io/football/players/826.png                                      | Russia                | Ufa                 | 
+ apif_68079  | I. Tuci                 | I. Tuci                       | 2000-09-14    | Albania            |                       | Attacker   |                    |       |           | Kayserispor                                                                                        |            22 |                  | https://media.api-sports.io/football/players/68079.png                                    | Albania               | Lezhë               | 
+ 27493       | Iván Cuéllar            |                               | 1984-05-27    | Spain              |                       | Goalkeeper | Goalkeeper         | left  |       187 | Real Club Deportivo Mallorca S.A.D.                                                                |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/27493-1664289273.jpg?lm=1          | Spain                 | Mérida              | https://www.transfermarkt.co.uk/ivan-cuellar/profil/spieler/27493
+ 290872      | Jérémie Porsan-Clémente |                               | 1997-12-16    | France             |                       | Attack     | Centre-Forward     | right |       179 | Montpellier HSC                                                                                    |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/290872-1678956870.png?lm=1         | Martinique            | Schoelcher          | https://www.transfermarkt.co.uk/jeremie-porsan-clemente/profil/spieler/290872
+ 670681      | João Neves              |                               | 2004-09-27    | Portugal           |                       | Midfield   | Central Midfield   | right |       174 | Paris Saint-Germain Football Club                                                                  |               |        110000000 | https://img.a.transfermarkt.technology/portrait/header/670681-1701295511.jpg?lm=1         | Portugal              | Tavira              | https://www.transfermarkt.co.uk/joao-neves/profil/spieler/670681
+ 181795      | Jonathan Vervoort       |                               | 1993-08-13    | Belgium            |                       | Defender   | Centre-Back        | right |       184 | Fodbold Club Nordsjælland                                                                          |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/s_181795_3892_2012_1.jpg?lm=1      | Belgium               | Brussel             | https://www.transfermarkt.co.uk/jonathan-vervoort/profil/spieler/181795
+ 129581      | Jordy Croux             |                               | 1994-01-15    | Belgium            |                       | Attack     | Right Winger       | left  |       172 | Willem II Tilburg                                                                                  |               |           750000 | https://img.a.transfermarkt.technology/portrait/header/129581-1574280450.jpg?lm=1         | Belgium               | Hasselt             | https://www.transfermarkt.co.uk/jordy-croux/profil/spieler/129581
+ 184992      | Juan Delgado            |                               | 1993-03-05    |                    |                       | Defender   | Right-Back         | right |       176 | FC Paços de Ferreira                                                                               |               |          1000000 | https://img.a.transfermarkt.technology/portrait/header/184992-1579704152.png?lm=1         |                       | Santiago de Chile   | https://www.transfermarkt.co.uk/juan-delgado/profil/spieler/184992
+ 530173      | Julian Niehues          |                               | 2001-04-17    | Germany            |                       | Midfield   | Defensive Midfield | right |       195 | 1. Fußballclub Heidenheim 1846                                                                     |               |          1500000 | https://img.a.transfermarkt.technology/portrait/header/530173-1721852705.jpg?lm=1         | Germany               | Münster             | https://www.transfermarkt.co.uk/julian-niehues/profil/spieler/530173
+ 315110      | Karl Toko Ekambi        |                               | 1992-09-14    | Cameroon           |                       | Attack     | Left Winger        | right |       182 | Stade Rennais Football Club                                                                        |               |          5000000 | https://img.a.transfermarkt.technology/portrait/header/315110-1668412255.jpg?lm=1         | France                | Paris               | https://www.transfermarkt.co.uk/karl-toko-ekambi/profil/spieler/315110
+ apif_6192   | L. Gamba                | L. Gamba                      | 1987-06-24    | Argentina          |                       | Attacker   |                    |       |       165 | Union Santa Fe                                                                                     |            18 |                  | https://media.api-sports.io/football/players/6192.png                                     | Argentina             | San Rafael          | 
+ 192507      | Léo Navacchio           |                               | 1992-12-28    | Brazil             |                       | Goalkeeper | Goalkeeper         | right |       192 | Portimonense SC                                                                                    |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/192507-1441721464.jpg?lm=1         | Brazil                | Piacatu             | https://www.transfermarkt.co.uk/leo-navacchio/profil/spieler/192507
+ 148153      | Lewis Dunk              |                               | 1991-11-21    | England            |                       | Defender   | Centre-Back        | right |       192 | Brighton and Hove Albion Football Club                                                             |               |          4000000 | https://img.a.transfermarkt.technology/portrait/header/148153-1716297176.jpg?lm=1         | England               | Brighton            | https://www.transfermarkt.co.uk/lewis-dunk/profil/spieler/148153
+ 616283      | Louis Pelletier         |                               | 2000-02-03    | France             |                       | Goalkeeper | Goalkeeper         | right |       186 | Racing Club de Strasbourg Alsace                                                                   |               |           100000 | https://img.a.transfermarkt.technology/portrait/header/616283-1604009836.png?lm=1         | France                | Ajaccio             | https://www.transfermarkt.co.uk/louis-pelletier/profil/spieler/616283
+ 156721      | Luka Milunovic          |                               | 1992-12-21    | Serbia             |                       | Midfield   | Attacking Midfield | right |       180 | AO Platanias                                                                                       |               |           450000 | https://img.a.transfermarkt.technology/portrait/header/156721-1639683526.jpeg?lm=1        | Yugoslavia (Republic) | Belgrade            | https://www.transfermarkt.co.uk/luka-milunovic/profil/spieler/156721
+ apif_465350 | M. Urvantsev            | M. Urvantsev                  | 2004-11-29    | Russia             |                       | Attacker   |                    |       |       184 | Nizhny Novgorod                                                                                    |            14 |                  | https://media.api-sports.io/football/players/465350.png                                   | Russia                |                     | 
+ 904371      | Maksym Kucheryavyi      |                               | 2002-05-09    | Ukraine            |                       | Midfield   | Central Midfield   | left  |       176 | St. Johnstone FC                                                                                   |               |           800000 | https://img.a.transfermarkt.technology/portrait/header/904371-1643309992.png?lm=1         | Ukraine               | Kyiv                | https://www.transfermarkt.co.uk/maksym-kucheryavyi/profil/spieler/904371
+ 14069       | Mamady Sidibé           |                               | 1979-12-18    | Mali               |                       | Attack     | Centre-Forward     | right |       193 | Stoke City                                                                                         |               |           700000 | https://img.a.transfermarkt.technology/portrait/header/s_14069_512_2009_1.jpg?lm=1        | Mali                  | Bamako              | https://www.transfermarkt.co.uk/mamady-sidibe/profil/spieler/14069
+ 46236       | Manolis Moniakis        |                               | 1988-11-09    | Greece             |                       | Defender   | Left-Back          | left  |       178 | Athlitiki Enosi Larisas                                                                            |               |           150000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Greece                | Heraklion           | https://www.transfermarkt.co.uk/manolis-moniakis/profil/spieler/46236
+ 296622      | Marco Asensio           |                               | 1996-01-21    | Spain              |                       | Midfield   | Attacking Midfield | left  |       182 | Paris Saint-Germain Football Club                                                                  |               |         15000000 | https://img.a.transfermarkt.technology/portrait/header/296622-1765459707.png?lm=1         | Spain                 | Palma de Mallorca   | https://www.transfermarkt.co.uk/marco-asensio/profil/spieler/296622
+ 315138      | Mats Knoester           |                               | 1998-11-19    | Netherlands        |                       | Defender   | Centre-Back        | left  |       188 | Aberdeen Football Club                                                                             |               |           600000 | https://img.a.transfermarkt.technology/portrait/header/315138-1567761193.jpg?lm=1         | Netherlands           | Alphen aan den Rijn | https://www.transfermarkt.co.uk/mats-knoester/profil/spieler/315138
+ 934317      | Maxim Dal               |                               | 2006-01-26    | Germany            |                       | Defender   | Centre-Back        | left  |       188 | 1. Fußball- und Sportverein Mainz 05                                                               |               |           150000 | https://img.a.transfermarkt.technology/portrait/header/934317-1722886472.jpg?lm=1         | Germany               | Nagold              | https://www.transfermarkt.co.uk/maxim-dal/profil/spieler/934317
+ 298607      | Miguel Olavide          |                               | 1996-04-05    | Spain              |                       | Attack     | Right Winger       | left  |       180 | Club Atlético Osasuna                                                                              |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/298607-1490624539.jpg?lm=1         | Spain                 | Pamplona            | https://www.transfermarkt.co.uk/miguel-olavide/profil/spieler/298607
+ 54651       | Mihael Kovacevic        |                               | 1988-03-06    | Switzerland        |                       | Defender   | Right-Back         | right |       193 | Ross County FC                                                                                     |               |           300000 | https://img.a.transfermarkt.technology/portrait/header/54651-1645290827.png?lm=1          | Switzerland           | Basel               | https://www.transfermarkt.co.uk/mihael-kovacevic/profil/spieler/54651
+ apif_366531 | N. Ordaz                | N. Ordaz                      | 2004-01-12    | El Salvador        |                       | Attacker   |                    |       |       180 | Los Angeles FC                                                                                     |            27 |                  | https://media.api-sports.io/football/players/366531.png                                   | USA                   | Van Nuys            | 
+ 818104      | Noa Wyns                |                               | 2003-02-20    | Belgium            |                       | Defender   | Centre-Back        | right |       192 | Royal Antwerp Football Club                                                                        |               |                  | https://img.a.transfermarkt.technology/portrait/header/818104-1678046832.jpg?lm=1         |                       |                     | https://www.transfermarkt.co.uk/noa-wyns/profil/spieler/818104
+ 557611      | Noam Emeran             |                               | 2002-09-24    | France             |                       | Attack     | Left Winger        | left  |       179 | Football Club Groningen                                                                            |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/557611-1764059010.png?lm=1         | France                | Paray-le-Monial     | https://www.transfermarkt.co.uk/noam-emeran/profil/spieler/557611
+ 51541       | Patrick Salomon         |                               | 1988-06-10    | Austria            |                       | Midfield   | Central Midfield   | right |       180 | APS Atromitos Athinon                                                                              |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/51541-1565958342.jpg?lm=1          | Austria               | Wien                | https://www.transfermarkt.co.uk/patrick-salomon/profil/spieler/51541
+ 379084      | Pavel Shakuro           |                               | 1997-07-25    | Russia             |                       | Defender   | Left-Back          | left  |       180 | FK Sochi                                                                                           |               |           300000 | https://img.a.transfermarkt.technology/portrait/header/379084-1668697804.png?lm=1         | Russia                | Tyumen              | https://www.transfermarkt.co.uk/pavel-shakuro/profil/spieler/379084
+ 314965      | Pedro Pereira           |                               | 1998-01-22    | Portugal           |                       | Defender   | Right-Back         | right |       185 | Gençlerbirliği Spor Kulübü                                                                         |               |          1200000 | https://img.a.transfermarkt.technology/portrait/header/314965-1754986954.png?lm=1         | Portugal              | Vendas Novas        | https://www.transfermarkt.co.uk/pedro-pereira/profil/spieler/314965
+ 365544      | Pontus Dahlberg         |                               | 1999-01-21    | Sweden             |                       | Goalkeeper | Goalkeeper         | right |       194 | Watford FC                                                                                         |               |           800000 | https://img.a.transfermarkt.technology/portrait/header/365544-1497953992.jpg?lm=1         | Sweden                | Älvängen            | https://www.transfermarkt.co.uk/pontus-dahlberg/profil/spieler/365544
+ apif_21138  | R. Aït-Nouri            | R. Aït-Nouri                  | 2001-06-06    | Algeria            |                       | Defender   |                    |       |       180 | Manchester City                                                                                    |            21 |                  | https://media.api-sports.io/football/players/21138.png                                    | France                | Montreuil           | 
+ apif_442340 | Rayan Enad              | R. bin Enad Hamoud Al Mutairi | 2000-12-25    | Saudi Arabia       |                       | Attacker   |                    |       |       170 | Al-Fayha                                                                                           |            77 |                  | https://media.api-sports.io/football/players/442340.png                                   | Saudi Arabia          |                     | 
+ 275483      | Ricardo Kieboom         |                               | 1991-09-20    | Netherlands        |                       | Goalkeeper | Goalkeeper         | right |       187 | Sparta Rotterdam                                                                                   |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/275483-1494424665.jpg?lm=1         | Netherlands           | Ridderkerk          | https://www.transfermarkt.co.uk/ricardo-kieboom/profil/spieler/275483
+ 792331      | Roony Bardghji          |                               | 2005-11-15    | Sweden             |                       | Attack     | Right Winger       | left  |       173 | Futbol Club Barcelona                                                                              |               |         10000000 | https://img.a.transfermarkt.technology/portrait/header/792331-1667420074.jpg?lm=1         | Kuwait                | Kuwait City         | https://www.transfermarkt.co.uk/roony-bardghji/profil/spieler/792331
+ 555015      | Ruan Tressoldi          |                               | 1999-06-07    | Brazil             |                       | Defender   | Centre-Back        | right |       187 | Unione Sportiva Sassuolo Calcio                                                                    |               |          2500000 | https://img.a.transfermarkt.technology/portrait/header/555015-1695028065.jpg?lm=1         | Brazil                | Tramandaí           | https://www.transfermarkt.co.uk/ruan-tressoldi/profil/spieler/555015
+ 111627      | Ryan Mendes             |                               | 1990-01-08    | Cape Verde         |                       | Attack     | Left Winger        | right |       178 | Fatih Karagümrük Sportif Faaliyetler San. Tic. A.Ş.                                                |               |           700000 | https://img.a.transfermarkt.technology/portrait/header/111627-1695219605.png?lm=1         | Cape Verde            | Fogo                | https://www.transfermarkt.co.uk/ryan-mendes/profil/spieler/111627
+ apif_25053  | S. Dursun               | S. Dursun                     | 1991-10-19    | Türkiye            |                       | Attacker   |                    |       |       190 | Kocaelispor                                                                                        |            19 |                  | https://media.api-sports.io/football/players/25053.png                                    | Germany               | Hamburg             | 
+ apif_619704 | S. Kabakusak            |                               |               |                    |                       | Goalkeeper |                    |       |           | Antalyaspor                                                                                        |            12 |                  | https://media.api-sports.io/football/players/619704.png                                   |                       |                     | 
+ apif_37453  | S. Kersten              | S. Kersten                    | 1998-01-30    | Netherlands        |                       | Defender   |                    |       |       191 | Heerenveen                                                                                         |             4 |                  | https://media.api-sports.io/football/players/37453.png                                    | Netherlands           | Nijmegen            | 
+ 45846       | Saidi Ntibazonkiza      |                               | 1987-05-01    | Burundi            |                       | Midfield   | Attacking Midfield | right |       170 | SM Caen                                                                                            |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/s_45846_5689_2013_09_06_1.jpg?lm=1 | Burundi               | Bujumbura           | https://www.transfermarkt.co.uk/saidi-ntibazonkiza/profil/spieler/45846
+ 43521       | Scott Robertson         |                               | 1985-04-07    | Scotland           |                       | Midfield   | Central Midfield   | right |       183 | Hibernian Football Club                                                                            |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/s_43521_903_2013_08_08_1.jpg?lm=1  | Scotland              | Dundee              | https://www.transfermarkt.co.uk/scott-robertson/profil/spieler/43521
+ 226151      | Sean Kelly              |                               | 1993-11-01    | Scotland           |                       | Defender   | Centre-Back        | left  |       188 | Dundee Football Club                                                                               |               |           125000 | https://img.a.transfermarkt.technology/portrait/header/226151-1634025398.jpg?lm=1         | Scotland              | Glasgow             | https://www.transfermarkt.co.uk/sean-kelly/profil/spieler/226151
+ apif_644377 | Shunya Sakai            |                               |               |                    |                       | Defender   |                    |       |           | New York Red Bulls                                                                                 |            41 |                  | https://media.api-sports.io/football/players/644377.png                                   |                       |                     | 
+ 375854      | Sodiq Fatai             |                               | 1996-06-04    | Nigeria            |                       | Attack     | Left Winger        | right |       178 | FC Paços de Ferreira                                                                               |               |           200000 | https://img.a.transfermarkt.technology/portrait/header/375854-1550237364.jpg?lm=1         | Nigeria               | Lagos               | https://www.transfermarkt.co.uk/sodiq-fatai/profil/spieler/375854
+ apif_304782 | T. Hayakawa             | T. Hayakawa                   | 1999-03-03    | Japan              |                       | Goalkeeper |                    |       |       187 | Kashima                                                                                            |             1 |                  | https://media.api-sports.io/football/players/304782.png                                   | Japan                 |                     | 
+ 685760      | Tamaz Topuriya          |                               | 2002-01-29    | Russia             |                       | Attack     | Right Winger       | right |       170 | FK Rostov                                                                                          |               |           150000 | https://img.a.transfermarkt.technology/portrait/header/685760-1636036877.png?lm=1         |                       |                     | https://www.transfermarkt.co.uk/tamaz-topuriya/profil/spieler/685760
+ 954159      | Tarık Tuğyan            |                               | 2004-08-14    | Türkiye            |                       | Attack     | Right Winger       | right |       173 | Fatih Karagümrük Sportif Faaliyetler San. Tic. A.Ş.                                                |               |            50000 | https://img.a.transfermarkt.technology/portrait/header/954159-1654101339.png?lm=1         | Türkiye               | Istanbul            | https://www.transfermarkt.co.uk/tarik-tugyan/profil/spieler/954159
+ 345842      | Tim Brinkman            |                               | 1997-03-22    | Netherlands        |                       | Defender   | Left-Back          | left  |       180 | Football Club Utrecht                                                                              |               |           250000 | https://img.a.transfermarkt.technology/portrait/header/default.jpg?lm=1                   | Netherlands           | Bilthoven           | https://www.transfermarkt.co.uk/tim-brinkman/profil/spieler/345842
+ 282349      | Timo Becker             |                               | 1997-03-25    | Germany            |                       | Defender   | Centre-Back        | right |       190 | Holstein Kiel                                                                                      |               |          1500000 | https://img.a.transfermarkt.technology/portrait/header/282349-1753385190.jpg?lm=1         | Germany               | Herten              | https://www.transfermarkt.co.uk/timo-becker/profil/spieler/282349
+ 751666      | Ty Barnett              |                               | 2005-07-19    | England            |                       | Attack     | Left Winger        |       |           | Wolverhampton Wanderers Football Club                                                              |               |           150000 | https://img.a.transfermarkt.technology/portrait/header/751666-1713863363.jpg?lm=1         | England               | Birmingham          | https://www.transfermarkt.co.uk/ty-barnett/profil/spieler/751666
+ 220650      | Vladimir Iljin          |                               | 1992-05-20    | Russia             |                       | Attack     | Centre-Forward     | right |       189 | FK Sochi                                                                                           |               |           450000 | https://img.a.transfermarkt.technology/portrait/header/220650-1722312532.png?lm=1         | Russia                | St. Petersburg      | https://www.transfermarkt.co.uk/vladimir-iljin/profil/spieler/220650
+ apif_568131 | Y. Hamoutahar           |                               |               |                    |                       | Attacker   |                    |       |           | Union St. Gilloise                                                                                 |            39 |                  | https://media.api-sports.io/football/players/568131.png                                   |                       |                     | 
+ 1560        | Youssef El Akchaoui     |                               | 1981-02-18    | Morocco            |                       | Defender   | Left-Back          |       |           | Sportclub Heerenveen                                                                               |               |           350000 | https://img.a.transfermarkt.technology/portrait/header/1560-1649145914.jpg?lm=1           | Netherlands           | Dordrecht           | https://www.transfermarkt.co.uk/youssef-el-akchaoui/profil/spieler/1560
+ 48536       | Yuval Shpungin          |                               | 1987-04-03    | Israel             |                       | Defender   | Right-Back         | right |       178 | RAEC Mons (- 2015)                                                                                 |               |            75000 | https://img.a.transfermarkt.technology/portrait/header/s_48536_1411_2013_08_16_1.jpg?lm=1 | Israel                | Ramat Gan           | https://www.transfermarkt.co.uk/yuval-shpungin/profil/spieler/48536
+ apif_269172 | Ziyad Al Johani         | Z. Al Marwani Al Johani       | 2001-11-11    | Saudi Arabia       |                       | Midfielder |                    |       |       180 | Al-Ahli Jeddah                                                                                     |            30 |                  | https://media.api-sports.io/football/players/269172.png                                   | Saudi Arabia          | Jeddah              | 
+(100 rows)
+
+========== Part B.1 — Name token counts ==========
+     id      |          name           |          name_short           | name_tokens | short_tokens | source 
+-------------+-------------------------+-------------------------------+-------------+--------------+--------
+ 235274      | Dario Van den Buijs     |                               |           4 |              | TM
+ 518943      | Ahmed Yasser Rayan      |                               |           3 |              | TM
+ 1118495     | David Santos Daiber     |                               |           3 |              | TM
+ 62751       | Giuseppe De Luca        |                               |           3 |              | TM
+ 315110      | Karl Toko Ekambi        |                               |           3 |              | TM
+ 1560        | Youssef El Akchaoui     |                               |           3 |              | TM
+ apif_269172 | Ziyad Al Johani         | Z. Al Marwani Al Johani       |           3 |            5 | APIF
+ apif_6053   | A. Bouzat               | A. Bouzat                     |           2 |            2 | APIF
+ apif_527392 | A. Özcan                | F. Özcan                      |           2 |            2 | APIF
+ apif_278373 | A. Sandez               | G. Sandez                     |           2 |            2 | APIF
+ 381206      | Adrián Riera            |                               |           2 |              | TM
+ apif_142289 | Aílson Tavares          |                               |           2 |              | APIF
+ 51164       | Aleksandrs Cauna        |                               |           2 |              | TM
+ 16828       | Alessandro Potenza      |                               |           2 |              | TM
+ 18644       | Álvaro Negredo          |                               |           2 |              | TM
+ 142281      | Anthony Ujah            |                               |           2 |              | TM
+ apif_51001  | B. Bye                  | B. Bye                        |           2 |            2 | APIF
+ apif_429270 | Ben Brannan             | B. Brannan                    |           2 |            2 | APIF
+ 5406        | Benoît Pedretti         |                               |           2 |              | TM
+ apif_6416   | C. Lattanzio            |                               |           2 |              | APIF
+ 66099       | Carles Planas           |                               |           2 |              | TM
+ 259881      | Damian Szymański        |                               |           2 |              | TM
+ 269864      | Daniel Guimarães        |                               |           2 |              | TM
+ 22594       | Daniele Galloppa        |                               |           2 |              | TM
+ 241706      | Danny Williams          |                               |           2 |              | TM
+ 672248      | Denis Kovacevic         |                               |           2 |              | TM
+ 213894      | Dimitrios Bourous       |                               |           2 |              | TM
+ 160510      | Dimitrios Stamou        |                               |           2 |              | TM
+ 343870      | Dmitriy Pletnev         |                               |           2 |              | TM
+ 584769      | Dwight McNeil           |                               |           2 |              | TM
+ apif_201354 | E. Makgopa              |                               |           2 |              | APIF
+ 876263      | Ejaita Ifoni            |                               |           2 |              | TM
+ apif_414474 | F. Chávez               | F. Chávez                     |           2 |            2 | APIF
+ apif_50749  | F. Picault              | F. Picault                    |           2 |            2 | APIF
+ 187601      | Fabian Sporkslede       |                               |           2 |              | TM
+ apif_389035 | Farid Alfa-Ruprecht     | F. Alfa-Ruprecht              |           2 |            2 | APIF
+ 746753      | Frankie Maguire         |                               |           2 |              | TM
+ 278648      | Furkan Simsek           |                               |           2 |              | TM
+ 627224      | Gabriel Silva           |                               |           2 |              | TM
+ 42513       | Gary Hooper             |                               |           2 |              | TM
+ 265266      | Gautam Kalpoe           |                               |           2 |              | TM
+ 254063      | Giannis Stamatakis      |                               |           2 |              | TM
+ 550492      | Giorgi Gagua            |                               |           2 |              | TM
+ 718312      | Hamzat Ojediran         |                               |           2 |              | TM
+ 567148      | Harry Stone             |                               |           2 |              | TM
+ apif_313025 | Hugo Rincón             | H. Rincón Lumbreras           |           2 |            3 | APIF
+ apif_826    | I. Diveev               | I. Diveev                     |           2 |            2 | APIF
+ apif_68079  | I. Tuci                 | I. Tuci                       |           2 |            2 | APIF
+ 27493       | Iván Cuéllar            |                               |           2 |              | TM
+ 290872      | Jérémie Porsan-Clémente |                               |           2 |              | TM
+ 670681      | João Neves              |                               |           2 |              | TM
+ 181795      | Jonathan Vervoort       |                               |           2 |              | TM
+ 129581      | Jordy Croux             |                               |           2 |              | TM
+ 184992      | Juan Delgado            |                               |           2 |              | TM
+ 530173      | Julian Niehues          |                               |           2 |              | TM
+ apif_6192   | L. Gamba                | L. Gamba                      |           2 |            2 | APIF
+ 192507      | Léo Navacchio           |                               |           2 |              | TM
+ 148153      | Lewis Dunk              |                               |           2 |              | TM
+ 616283      | Louis Pelletier         |                               |           2 |              | TM
+ 156721      | Luka Milunovic          |                               |           2 |              | TM
+ apif_465350 | M. Urvantsev            | M. Urvantsev                  |           2 |            2 | APIF
+ 904371      | Maksym Kucheryavyi      |                               |           2 |              | TM
+ 14069       | Mamady Sidibé           |                               |           2 |              | TM
+ 46236       | Manolis Moniakis        |                               |           2 |              | TM
+ 296622      | Marco Asensio           |                               |           2 |              | TM
+ 315138      | Mats Knoester           |                               |           2 |              | TM
+ 934317      | Maxim Dal               |                               |           2 |              | TM
+ 298607      | Miguel Olavide          |                               |           2 |              | TM
+ 54651       | Mihael Kovacevic        |                               |           2 |              | TM
+ apif_366531 | N. Ordaz                | N. Ordaz                      |           2 |            2 | APIF
+ 818104      | Noa Wyns                |                               |           2 |              | TM
+ 557611      | Noam Emeran             |                               |           2 |              | TM
+ 51541       | Patrick Salomon         |                               |           2 |              | TM
+ 379084      | Pavel Shakuro           |                               |           2 |              | TM
+ 314965      | Pedro Pereira           |                               |           2 |              | TM
+ 365544      | Pontus Dahlberg         |                               |           2 |              | TM
+ apif_21138  | R. Aït-Nouri            | R. Aït-Nouri                  |           2 |            2 | APIF
+ apif_442340 | Rayan Enad              | R. bin Enad Hamoud Al Mutairi |           2 |            6 | APIF
+ 275483      | Ricardo Kieboom         |                               |           2 |              | TM
+ 792331      | Roony Bardghji          |                               |           2 |              | TM
+ 555015      | Ruan Tressoldi          |                               |           2 |              | TM
+ 111627      | Ryan Mendes             |                               |           2 |              | TM
+ apif_25053  | S. Dursun               | S. Dursun                     |           2 |            2 | APIF
+ apif_619704 | S. Kabakusak            |                               |           2 |              | APIF
+ apif_37453  | S. Kersten              | S. Kersten                    |           2 |            2 | APIF
+ 45846       | Saidi Ntibazonkiza      |                               |           2 |              | TM
+ 43521       | Scott Robertson         |                               |           2 |              | TM
+ 226151      | Sean Kelly              |                               |           2 |              | TM
+ apif_644377 | Shunya Sakai            |                               |           2 |              | APIF
+ 375854      | Sodiq Fatai             |                               |           2 |              | TM
+ apif_304782 | T. Hayakawa             | T. Hayakawa                   |           2 |            2 | APIF
+ 685760      | Tamaz Topuriya          |                               |           2 |              | TM
+ 954159      | Tarık Tuğyan            |                               |           2 |              | TM
+ 345842      | Tim Brinkman            |                               |           2 |              | TM
+ 282349      | Timo Becker             |                               |           2 |              | TM
+ 751666      | Ty Barnett              |                               |           2 |              | TM
+ 220650      | Vladimir Iljin          |                               |           2 |              | TM
+ apif_568131 | Y. Hamoutahar           |                               |           2 |              | APIF
+ 48536       | Yuval Shpungin          |                               |           2 |              | TM
+ 373300      | Cryzan                  |                               |           1 |              | TM
+(100 rows)
+
+========== Part B.2 — Single-name players (mononyms) ==========
+   id   |  name  | name_short | nationality | position 
+--------+--------+------------+-------------+----------
+ 373300 | Cryzan |            | Brazil      | Attack
+(1 row)
+
+========== Part B.3 — Players with initials (A. Diallo) ==========
+     id      |     name      |  name_short  | nationality  | date_of_birth 
+-------------+---------------+--------------+--------------+---------------
+ apif_6192   | L. Gamba      | L. Gamba     | Argentina    | 1987-06-24
+ apif_568131 | Y. Hamoutahar |              |              | 
+ apif_6416   | C. Lattanzio  |              |              | 
+ apif_414474 | F. Chávez     | F. Chávez    | Peru         | 2007-04-10
+ apif_465350 | M. Urvantsev  | M. Urvantsev | Russia       | 2004-11-29
+ apif_527392 | A. Özcan      | F. Özcan     | Türkiye      | 2009-10-01
+ apif_25053  | S. Dursun     | S. Dursun    | Türkiye      | 1991-10-19
+ apif_278373 | A. Sandez     | G. Sandez    | Argentina    | 2001-01-16
+ apif_21138  | R. Aït-Nouri  | R. Aït-Nouri | Algeria      | 2001-06-06
+ apif_826    | I. Diveev     | I. Diveev    | Russia       | 1999-09-27
+ apif_68079  | I. Tuci       | I. Tuci      | Albania      | 2000-09-14
+ apif_51001  | B. Bye        | B. Bye       | USA          | 1995-11-29
+ apif_304782 | T. Hayakawa   | T. Hayakawa  | Japan        | 1999-03-03
+ apif_619704 | S. Kabakusak  |              |              | 
+ apif_6053   | A. Bouzat     | A. Bouzat    | Argentina    | 1994-03-28
+ apif_37453  | S. Kersten    | S. Kersten   | Netherlands  | 1998-01-30
+ apif_366531 | N. Ordaz      | N. Ordaz     | El Salvador  | 2004-01-12
+ apif_50749  | F. Picault    | F. Picault   | Haiti        | 1991-02-23
+ apif_201354 | E. Makgopa    |              | South Africa | 
+(19 rows)
+
+========== Part B.4 — Name prefixes (van, dos, etc.) ==========
+     id      |        name         | nationality  
+-------------+---------------------+--------------
+ apif_429270 | Ben Brannan         | Scotland
+ 235274      | Dario Van den Buijs | Belgium
+ 1560        | Youssef El Akchaoui | Morocco
+ apif_269172 | Ziyad Al Johani     | Saudi Arabia
+ 62751       | Giuseppe De Luca    | Italy
+(5 rows)
+
+========== Part B.5 — Hyphenated names ==========
+     id      |          name           | nationality 
+-------------+-------------------------+-------------
+ 290872      | Jérémie Porsan-Clémente | France
+ apif_21138  | R. Aït-Nouri            | Algeria
+ apif_389035 | Farid Alfa-Ruprecht     | Germany
+(3 rows)
+
+========== Part C.1 — Duplicates: last_token + DOB + nationality ==========
+    id_a     |       name_a        | source_a |    id_b     |       name_b        | source_b | date_of_birth | nationality 
+-------------+---------------------+----------+-------------+---------------------+----------+---------------+-------------
+ apif_527392 | A. Özcan            | APIF     | 1437503     | Ayaz Özcan          | TM       | 2009-10-01    | Türkiye
+ apif_429270 | Ben Brannan         | APIF     | 1049906     | Ben Brannan         | TM       | 2007-01-30    | Scotland
+ 1118495     | David Santos Daiber | TM       | apif_449689 | David Daiber        | APIF     | 2007-01-10    | Portugal
+ 584769      | Dwight McNeil       | TM       | apif_18929  | D. McNeil           | APIF     | 1999-11-22    | England
+ apif_414474 | F. Chávez           | APIF     | 1009441     | Felipe Chávez       | TM       | 2007-04-10    | Peru
+ apif_389035 | Farid Alfa-Ruprecht | APIF     | 897402      | Farid Alfa-Ruprecht | TM       | 2006-03-28    | Germany
+ 627224      | Gabriel Silva       | TM       | apif_266630 | Gabriel Silva       | APIF     | 2002-03-22    | Brazil
+ 718312      | Hamzat Ojediran     | TM       | apif_237232 | H. Ojediran         | APIF     | 2003-11-14    | Nigeria
+ apif_313025 | Hugo Rincón         | APIF     | 834487      | Hugo Rincón         | TM       | 2003-01-27    | Spain
+ apif_826    | I. Diveev           | APIF     | 532732      | Igor Diveev         | TM       | 1999-09-27    | Russia
+ apif_68079  | I. Tuci             | APIF     | 675857      | Indrit Tuci         | TM       | 2000-09-14    | Albania
+ 27493       | Iván Cuéllar        | TM       | apif_47399  | Iván Cuéllar        | APIF     | 1984-05-27    | Spain
+ 670681      | João Neves          | TM       | apif_335051 | João Neves          | APIF     | 2004-09-27    | Portugal
+ 129581      | Jordy Croux         | TM       | apif_38777  | J. Croux            | APIF     | 1994-01-15    | Belgium
+ 530173      | Julian Niehues      | TM       | apif_203011 | J. Niehues          | APIF     | 2001-04-17    | Germany
+ 315110      | Karl Toko Ekambi    | TM       | apif_1709   | K. Toko Ekambi      | APIF     | 1992-09-14    | Cameroon
+ 148153      | Lewis Dunk          | TM       | apif_18963  | L. Dunk             | APIF     | 1991-11-21    | England
+ apif_465350 | M. Urvantsev        | APIF     | 817355      | Matvey Urvantsev    | TM       | 2004-11-29    | Russia
+ 296622      | Marco Asensio       | TM       | apif_746    | Marco Asensio       | APIF     | 1996-01-21    | Spain
+ 315138      | Mats Knoester       | TM       | apif_37253  | M. Knoester         | APIF     | 1998-11-19    | Netherlands
+ 934317      | Maxim Dal           | TM       | apif_394735 | Maxim Bora Dal      | APIF     | 2006-01-26    | Germany
+ 557611      | Noam Emeran         | TM       | apif_282136 | Noam Fritz Emeran   | APIF     | 2002-09-24    | France
+ 314965      | Pedro Pereira       | TM       | apif_30768  | Pedro Pereira       | APIF     | 1998-01-22    | Portugal
+ apif_21138  | R. Aït-Nouri        | APIF     | 578391      | Rayan Aït-Nouri     | TM       | 2001-06-06    | Algeria
+ 792331      | Roony Bardghji      | TM       | apif_338958 | R. Bardghji         | APIF     | 2005-11-15    | Sweden
+ 555015      | Ruan Tressoldi      | TM       | apif_152857 | Ruan Tressoldi      | APIF     | 1999-06-07    | Brazil
+ 111627      | Ryan Mendes         | TM       | apif_50270  | Ryan Mendes         | APIF     | 1990-01-08    | Cape Verde
+ apif_25053  | S. Dursun           | APIF     | 80059       | Serdar Dursun       | TM       | 1991-10-19    | Türkiye
+ apif_37453  | S. Kersten          | APIF     | 430797      | Sam Kersten         | TM       | 1998-01-30    | Netherlands
+ 220650      | Vladimir Iljin      | TM       | apif_53643  | V. Iljin            | APIF     | 1992-05-20    | Russia
+(30 rows)
+
+========== Part C.2 — Broader: same DOB + nationality (all matches) ==========
+  sample_id  |     sample_name     | sample_source |  match_id   |     match_name      | match_source | date_of_birth | nationality 
+-------------+---------------------+---------------+-------------+---------------------+--------------+---------------+-------------
+ apif_527392 | A. Özcan            | APIF          | 1437503     | Ayaz Özcan          | TM           | 2009-10-01    | Türkiye
+ apif_429270 | Ben Brannan         | APIF          | apif_435849 | O. Stirton          | APIF         | 2007-01-30    | Scotland
+ apif_429270 | Ben Brannan         | APIF          | 1176418     | Owen Stirton        | TM           | 2007-01-30    | Scotland
+ apif_429270 | Ben Brannan         | APIF          | 1049906     | Ben Brannan         | TM           | 2007-01-30    | Scotland
+ 373300      | Cryzan              | TM            | 661284      | Fabinho             | TM           | 1996-07-07    | Brazil
+ 241706      | Danny Williams      | TM            | 38091       | Adam Hammill        | TM           | 1988-01-25    | England
+ 1118495     | David Santos Daiber | TM            | apif_449689 | David Daiber        | APIF         | 2007-01-10    | Portugal
+ 213894      | Dimitrios Bourous   | TM            | 257485      | Giannis Nakos       | TM           | 1993-02-23    | Greece
+ 584769      | Dwight McNeil       | TM            | apif_18929  | D. McNeil           | APIF         | 1999-11-22    | England
+ apif_414474 | F. Chávez           | APIF          | 1009441     | Felipe Chávez       | TM           | 2007-04-10    | Peru
+ apif_389035 | Farid Alfa-Ruprecht | APIF          | 897402      | Farid Alfa-Ruprecht | TM           | 2006-03-28    | Germany
+ 627224      | Gabriel Silva       | TM            | 836737      | Luiz Felipe Bonetti | TM           | 2002-03-22    | Brazil
+ 627224      | Gabriel Silva       | TM            | apif_266630 | Gabriel Silva       | APIF         | 2002-03-22    | Brazil
+ 718312      | Hamzat Ojediran     | TM            | apif_237232 | H. Ojediran         | APIF         | 2003-11-14    | Nigeria
+ apif_313025 | Hugo Rincón         | APIF          | 834487      | Hugo Rincón         | TM           | 2003-01-27    | Spain
+ apif_826    | I. Diveev           | APIF          | 532732      | Igor Diveev         | TM           | 1999-09-27    | Russia
+ apif_68079  | I. Tuci             | APIF          | 675857      | Indrit Tuci         | TM           | 2000-09-14    | Albania
+ 27493       | Iván Cuéllar        | TM            | apif_47399  | Iván Cuéllar        | APIF         | 1984-05-27    | Spain
+ 670681      | João Neves          | TM            | apif_335051 | João Neves          | APIF         | 2004-09-27    | Portugal
+ 129581      | Jordy Croux         | TM            | apif_38777  | J. Croux            | APIF         | 1994-01-15    | Belgium
+ 530173      | Julian Niehues      | TM            | apif_203011 | J. Niehues          | APIF         | 2001-04-17    | Germany
+ 315110      | Karl Toko Ekambi    | TM            | apif_1709   | K. Toko Ekambi      | APIF         | 1992-09-14    | Cameroon
+ apif_6192   | L. Gamba            | APIF          | apif_154    | L. Messi            | APIF         | 1987-06-24    | Argentina
+ apif_6192   | L. Gamba            | APIF          | 28003       | Lionel Messi        | TM           | 1987-06-24    | Argentina
+ 192507      | Léo Navacchio       | TM            | 269467      | César Martins       | TM           | 1992-12-28    | Brazil
+ 148153      | Lewis Dunk          | TM            | apif_18963  | L. Dunk             | APIF         | 1991-11-21    | England
+ 616283      | Louis Pelletier     | TM            | apif_20638  | E. Le Fée           | APIF         | 2000-02-03    | France
+ 616283      | Louis Pelletier     | TM            | 633992      | Enzo Le Fée         | TM           | 2000-02-03    | France
+ apif_465350 | M. Urvantsev        | APIF          | 817355      | Matvey Urvantsev    | TM           | 2004-11-29    | Russia
+ 296622      | Marco Asensio       | TM            | apif_746    | Marco Asensio       | APIF         | 1996-01-21    | Spain
+ 315138      | Mats Knoester       | TM            | apif_37253  | M. Knoester         | APIF         | 1998-11-19    | Netherlands
+ 315138      | Mats Knoester       | TM            | 408574      | Joey Veerman        | TM           | 1998-11-19    | Netherlands
+ 315138      | Mats Knoester       | TM            | apif_37749  | J. Veerman          | APIF         | 1998-11-19    | Netherlands
+ 934317      | Maxim Dal           | TM            | apif_394735 | Maxim Bora Dal      | APIF         | 2006-01-26    | Germany
+ 298607      | Miguel Olavide      | TM            | 340206      | Andoni López        | TM           | 1996-04-05    | Spain
+ 818104      | Noa Wyns            | TM            | 717891      | Ismaël El Abbassi   | TM           | 2003-02-20    | Belgium
+ 557611      | Noam Emeran         | TM            | apif_282136 | Noam Fritz Emeran   | APIF         | 2002-09-24    | France
+ 379084      | Pavel Shakuro       | TM            | 282630      | Artem Mamin         | TM           | 1997-07-25    | Russia
+ 314965      | Pedro Pereira       | TM            | apif_30768  | Pedro Pereira       | APIF         | 1998-01-22    | Portugal
+ apif_21138  | R. Aït-Nouri        | APIF          | 578391      | Rayan Aït-Nouri     | TM           | 2001-06-06    | Algeria
+ 792331      | Roony Bardghji      | TM            | apif_338958 | R. Bardghji         | APIF         | 2005-11-15    | Sweden
+ 555015      | Ruan Tressoldi      | TM            | apif_152857 | Ruan Tressoldi      | APIF         | 1999-06-07    | Brazil
+ 111627      | Ryan Mendes         | TM            | apif_50270  | Ryan Mendes         | APIF         | 1990-01-08    | Cape Verde
+ apif_25053  | S. Dursun           | APIF          | 80059       | Serdar Dursun       | TM           | 1991-10-19    | Türkiye
+ apif_37453  | S. Kersten          | APIF          | 430797      | Sam Kersten         | TM           | 1998-01-30    | Netherlands
+ apif_37453  | S. Kersten          | APIF          | 339445      | Jelle de Lange      | TM           | 1998-01-30    | Netherlands
+ 345842      | Tim Brinkman        | TM            | 288245      | Segun Owobowale     | TM           | 1997-03-22    | Netherlands
+ 282349      | Timo Becker         | TM            | 239972      | Jonas Carls         | TM           | 1997-03-25    | Germany
+ 220650      | Vladimir Iljin      | TM            | apif_53643  | V. Iljin            | APIF         | 1992-05-20    | Russia
+(49 rows)
+
+========== Part C.3 — Cross-source twin counts ==========
+ sample_source | total_in_sample | has_cross_source_twin 
+---------------+-----------------+-----------------------
+ APIF          |              28 |                    14
+ TM            |              75 |                    21
+(2 rows)
+
+========== Part D.1 — Wikipedia bios for sample ==========
+     id      |      name      |    nationality     | date_of_birth | bio_source |                                                                                               bio_preview                                                                                                |                     wikipedia_url                      
+-------------+----------------+--------------------+---------------+------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------
+ apif_6053   | A. Bouzat      | Argentina          | 1994-03-28    | wikipedia  | Agustín Bouzat is an Argentine professional footballer who plays as a midfielder for Houston Dynamo.                                                                                                     | https://en.wikipedia.org/wiki/Agust%C3%ADn_Bouzat
+ apif_278373 | A. Sandez      | Argentina          | 2001-01-16    | wikipedia  | Gonzalo Agustín Sández is professional footballer currently playing as a left-back for Rosario Central. Born in Argentina, he plays for the Paraguay national team.                                      | https://en.wikipedia.org/wiki/Agust%C3%ADn_S%C3%A1ndez
+ apif_142289 | Aílson Tavares | Cape Verde Islands |               | wikipedia  | Aílson Júnior Mendes Tavares, is a Cape Verdean footballer who plays as a midfielder.                                                                                                                    | https://en.wikipedia.org/wiki/A%C3%ADlson_Tavares
+ 584769      | Dwight McNeil  | England            | 1999-11-22    | wikipedia  | Dwight James Matthew McNeil is an English professional footballer who plays as a winger for Premier League club Everton.                                                                                 | https://en.wikipedia.org/wiki/Dwight_McNeil
+ 670681      | João Neves     | Portugal           | 2004-09-27    | wikipedia  | João Pedro Gonçalves Neves is a Portuguese professional footballer who plays as a midfielder for Ligue 1 club Paris Saint-Germain and the Portugal national team. He is regarded as one of the most prom | https://en.wikipedia.org/wiki/Jo%C3%A3o_Neves
+ 296622      | Marco Asensio  | Spain              | 1996-01-21    | wikipedia  | Marco Asensio Willemsen is a Spanish professional footballer who plays as a winger or attacking midfielder for Süper Lig club Fenerbahçe and the Spain national team.                                    | https://en.wikipedia.org/wiki/Marco_Asensio
+(6 rows)
+
+========== Part E.1 — Field completeness by source ==========
+ source | total | has_name | has_name_short | has_dob | has_nationality | has_nat2 | has_position | has_subpos | has_foot | has_height | has_club | has_jersey | has_market_value | has_birth_country | has_birth_city | has_tm_url 
+--------+-------+----------+----------------+---------+-----------------+----------+--------------+------------+----------+------------+----------+------------+------------------+-------------------+----------------+------------
+ APIF   |    26 |       26 |             20 |      20 |              22 |        0 |           26 |          0 |        0 |         17 |       24 |         22 |                0 |                20 |             15 |          0
+ TM     |    74 |       74 |              0 |      74 |              73 |        0 |           74 |         74 |       71 |         72 |       74 |          0 |               72 |                68 |             69 |         74
+(2 rows)
+
+========== Part F.1 — Top 30 duplicate names in full 49K ==========
+      name      | occurrences | distinct_nationalities | distinct_dobs 
+----------------+-------------+------------------------+---------------
+ Paulinho       |          16 |                      2 |            13
+ João Pedro     |          15 |                      4 |            12
+ Vitinho        |          14 |                      1 |             8
+ Guilherme      |          13 |                      3 |            11
+ Pedro Henrique |          11 |                      1 |             7
+ J. Rodríguez   |          10 |                      5 |            10
+ Danilo         |          10 |                      2 |             7
+ João Victor    |           9 |                      1 |             7
+ Pedrinho       |           9 |                      2 |             7
+ Serginho       |           9 |                      3 |             7
+ Wanderson      |           8 |                      1 |             6
+ Fernando       |           8 |                      1 |             5
+ Marcão         |           8 |                      1 |             5
+ Pablo          |           8 |                      2 |             6
+ Otávio         |           8 |                      2 |             4
+ Eduardo        |           8 |                      3 |             6
+ Gabriel        |           8 |                      2 |             7
+ Dudu           |           8 |                      2 |             6
+ M. Rodríguez   |           8 |                      5 |             8
+ Alex           |           7 |                      2 |             7
+ Pedro Santos   |           7 |                      1 |             4
+ Rômulo         |           7 |                      2 |             6
+ William        |           7 |                      1 |             5
+ Bruninho       |           7 |                      2 |             7
+ Pedro          |           7 |                      2 |             5
+ Marlon         |           7 |                      1 |             4
+ Everton        |           7 |                      2 |             6
+ Fabinho        |           7 |                      2 |             6
+ Marquinhos     |           7 |                      1 |             4
+ Allan          |           6 |                      1 |             4
+(30 rows)
+
+========== Part F.2 — Sample players who have name twins ==========
+        name         |     id      | nationality | date_of_birth | name_twins 
+---------------------+-------------+-------------+---------------+------------
+ Gabriel Silva       | 627224      | Brazil      | 2002-03-22    |          3
+ Pedro Pereira       | 314965      | Portugal    | 1998-01-22    |          2
+ Ruan Tressoldi      | 555015      | Brazil      | 1999-06-07    |          1
+ Hugo Rincón         | apif_313025 | Spain       | 2003-01-27    |          1
+ Iván Cuéllar        | 27493       | Spain       | 1984-05-27    |          1
+ Farid Alfa-Ruprecht | apif_389035 | Germany     | 2006-03-28    |          1
+ Ben Brannan         | apif_429270 | Scotland    | 2007-01-30    |          1
+ Ryan Mendes         | 111627      | Cape Verde  | 1990-01-08    |          1
+ Juan Delgado        | 184992      |             | 1993-03-05    |          1
+ João Neves          | 670681      | Portugal    | 2004-09-27    |          1
+ Scott Robertson     | 43521       | Scotland    | 1985-04-07    |          1
+ Marco Asensio       | 296622      | Spain       | 1996-01-21    |          1
+ Danny Williams      | 241706      | England     | 1988-01-25    |          1
+(13 rows)
+
