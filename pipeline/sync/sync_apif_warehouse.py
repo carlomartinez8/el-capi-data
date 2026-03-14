@@ -54,6 +54,44 @@ THROTTLE_SECONDS = 1.5
 THROTTLE_BATCH = 3.0  # extra pause every 25 requests
 BATCH_PAUSE_EVERY = 25
 
+# API-Football national team IDs (from /teams?country=... or dashboard)
+# Colombia = 8 (national team); 1132 is club "Chico"
+NATIONAL_TEAM_APIF_IDS = {
+    "COL": 8,      # Colombia
+    "ARG": 2,      # Argentina
+    "BRA": 5,      # Brazil
+    "USA": 1,      # United States
+    "MEX": 14,     # Mexico
+    "FRA": 9,      # France
+    "ESP": 6,      # Spain
+    "GER": 4,      # Germany
+    "ENG": 10,     # England
+    "POR": 38,     # Portugal
+    "BEL": 3,      # Belgium
+    "NED": 15,     # Netherlands
+    "URU": 7,      # Uruguay
+    "ECU": 1131,   # Ecuador
+    "PER": 1133,   # Peru
+    "CHI": 1134,   # Chile
+    "JPN": 116,    # Japan
+    "KOR": 117,    # South Korea
+    "EGY": 1135,   # Egypt
+    "MAR": 66,     # Morocco
+    "SEN": 1136,   # Senegal
+    "CIV": 1137,   # Ivory Coast
+    "GHA": 1138,   # Ghana
+    "NGA": 1140,   # Nigeria
+    "AUS": 1,      # Australia (may need verification)
+    "CAN": 161,    # Canada
+    "CRC": 1139,   # Costa Rica
+    "PAN": 1141,   # Panama
+    "JAM": 1142,   # Jamaica
+    "HAI": 1143,   # Haiti
+    "PAR": 1144,   # Paraguay
+    "BOL": 1145,   # Bolivia
+    "VEN": 1146,   # Venezuela
+}
+
 
 # ── API-Football Client ─────────────────────────────────────────────────
 
@@ -92,9 +130,26 @@ class ApiFootball:
         results = data.get("response", [])
         return results[0] if results else None
 
-    def search_player_by_name(self, name: str, season: int = 2025) -> list[dict]:
-        """Search players by name with season context for current stats."""
-        data = self.get("players", {"search": name, "season": season})
+    def get_team_squad(self, team_id: int) -> list[dict]:
+        """Get current squad for a team (e.g. national team). Returns list of player entries with id, name, etc."""
+        data = self.get("players/squads", {"team": team_id})
+        # Response shape: {"response": [{"team": {...}, "players": [{id, name, ...}, ...]}]}
+        raw = data.get("response", [])
+        if not raw:
+            return []
+        first = raw[0]
+        if isinstance(first, dict) and "players" in first:
+            return first["players"]
+        if isinstance(first, list):
+            return first
+        return raw
+
+    def search_player_by_name(self, name: str, season: int = 2025, team_id: int | None = None) -> list[dict]:
+        """Search players by name. API requires team or league with search; pass team_id for national team scope."""
+        params = {"search": name, "season": season}
+        if team_id:
+            params["team"] = team_id
+        data = self.get("players", params)
         return data.get("response", [])
 
     def throttle(self):
@@ -111,6 +166,19 @@ def normalize(name: str) -> str:
     import unicodedata
     nfkd = unicodedata.normalize("NFKD", name)
     return "".join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
+
+
+def sanitize_search_name(name: str) -> str:
+    """API requires search: only alphanumeric and spaces, min 4 chars."""
+    import unicodedata
+    nfkd = unicodedata.normalize("NFKD", name)
+    ascii_name = "".join(c for c in nfkd if not unicodedata.combining(c))
+    # Keep only letters, digits, spaces
+    clean = "".join(c for c in ascii_name if c.isalnum() or c.isspace()).strip()
+    if len(clean) >= 4:
+        return clean
+    # Use full name or pad: API min 4 chars
+    return clean if len(clean) >= 4 else (clean + " " * (4 - len(clean))).strip() or "abcd"
 
 
 def names_match(warehouse_name: str, apif_name: str) -> bool:
@@ -185,16 +253,16 @@ def fetch_wc_players(supabase, team_code: str | None = None, confidence: str | N
             .in_("player_id", batch) \
             .execute()
 
-        # Get aliases (for APIF ID mapping)
+        # Get aliases (for APIF ID mapping — warehouse uses alias_type/alias_value)
         a_resp = supabase.table("player_aliases") \
-            .select("player_id, source, source_id") \
+            .select("player_id, alias_type, alias_value") \
             .in_("player_id", batch) \
-            .eq("source", "api_football") \
+            .eq("alias_type", "apif_id") \
             .execute()
 
         p_map = {p["id"]: p for p in (p_resp.data or [])}
         c_map = {c["player_id"]: c for c in (c_resp.data or [])}
-        a_map = {a["player_id"]: a["source_id"] for a in (a_resp.data or [])}
+        a_map = {a["player_id"]: a["alias_value"] for a in (a_resp.data or [])}
 
         for pid in batch:
             p = p_map.get(pid)
@@ -247,13 +315,13 @@ def update_player_identity(supabase, player_id: str, updates: dict) -> bool:
 
 
 def save_alias(supabase, player_id: str, apif_id: int):
-    """Save API-Football ID as a player alias for future lookups."""
+    """Save API-Football ID as a player alias for future lookups (alias_type=apif_id)."""
     try:
         supabase.table("player_aliases").upsert({
             "player_id": player_id,
-            "source": "api_football",
-            "source_id": str(apif_id),
-        }, on_conflict="player_id,source,source_id").execute()
+            "alias_type": "apif_id",
+            "alias_value": str(apif_id),
+        }, on_conflict="alias_type,alias_value").execute()
     except Exception:
         pass  # OK if alias already exists with different constraint
 
@@ -286,26 +354,52 @@ def sync_player(api: ApiFootball, supabase, player: dict) -> dict:
         except (ValueError, Exception):
             pass
 
-    # Strategy 2: Search by name
+    # Strategy 1.5: Match from pre-fetched team squad (avoids search API validation issues)
+    if not apif_data and player.get("squad_list"):
+        for entry in player["squad_list"]:
+            p_entry = entry.get("player", entry)
+            apif_id_val = p_entry.get("id")
+            apif_name = p_entry.get("name") or (p_entry.get("firstname", "") + " " + p_entry.get("lastname", "")).strip()
+            if not apif_id_val or not apif_name:
+                continue
+            # Squad names are often abbreviated ("J. Rodríguez"); match full name or last name
+            if names_match(name, apif_name) or (full_name and names_match(full_name, apif_name)):
+                matched = True
+            else:
+                w_last = name.split()[-1] if name else ""
+                a_last = apif_name.split()[-1] if apif_name else ""
+                matched = w_last and a_last and names_match(w_last, a_last)
+            if matched:
+                try:
+                    apif_data = api.get_player_by_id(int(apif_id_val))
+                    api.throttle()
+                except (ValueError, Exception):
+                    continue
+                if apif_data:
+                    break
+
+    # Strategy 2: Search by name (API requires team or league with search for team-scoped sync)
+    apif_team_id = player.get("apif_team_id")
     if not apif_data:
-        search_name = name if len(name.split()) <= 3 else name.split()[-1]
+        # Prefer last name (often more unique); sanitize for API: alphanumeric + spaces, min 4 chars
+        search_name = sanitize_search_name(name if len(name.split()) <= 3 else name.split()[-1])
+        if len(search_name) < 4 and full_name:
+            search_name = sanitize_search_name(full_name.split()[-1] if full_name else name)
         try:
-            results = api.search_player_by_name(search_name)
+            results = api.search_player_by_name(search_name, team_id=apif_team_id)
             api.throttle()
         except Exception as e:
             result["status"] = "api_error"
             result["error"] = str(e)
             return result
 
-        if not results:
-            # Try full name
-            if full_name and full_name != name:
-                search_name2 = full_name.split()[-1]
-                try:
-                    results = api.search_player_by_name(search_name2)
-                    api.throttle()
-                except Exception:
-                    pass
+        if not results and full_name and full_name != name:
+            search_name2 = sanitize_search_name(full_name.split()[-1])
+            try:
+                results = api.search_player_by_name(search_name2, team_id=apif_team_id)
+                api.throttle()
+            except Exception:
+                pass
 
         if not results:
             result["status"] = "not_found"
@@ -397,7 +491,7 @@ def sync_player(api: ApiFootball, supabase, player: dict) -> dict:
         update_player_career(supabase, pid, career_updates)
 
     if identity_updates:
-        identity_updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+        # players table has no updated_at; only player_career has it
         update_player_identity(supabase, pid, identity_updates)
 
     # Save APIF alias for future direct lookups
@@ -474,6 +568,12 @@ def main():
         team_code = args.target.upper()
         print(f"\n  Mode: team sync ({team_code})")
         players = fetch_wc_players(supabase, team_code=team_code)
+        apif_team_id = NATIONAL_TEAM_APIF_IDS.get(team_code)
+        if apif_team_id:
+            for p in players:
+                p["apif_team_id"] = apif_team_id
+        else:
+            print(f"  WARNING: No API-Football team ID for {team_code}; search may fail (API requires team/league with search).")
 
     elif args.mode == "player":
         if not args.target:
@@ -496,9 +596,9 @@ def main():
             .single() \
             .execute()
         a_resp = supabase.table("player_aliases") \
-            .select("source_id") \
+            .select("alias_value") \
             .eq("player_id", args.target) \
-            .eq("source", "api_football") \
+            .eq("alias_type", "apif_id") \
             .execute()
 
         p = p_resp.data
@@ -515,13 +615,15 @@ def main():
             "position": c.get("position_primary"),
             "confidence": p.get("data_confidence"),
             "wc_team_code": t.get("wc_team_code"),
-            "apif_id": a_data[0]["source_id"] if a_data else None,
+            "apif_id": a_data[0]["alias_value"] if a_data else None,
         }]
         print(f"\n  Mode: single player ({players[0]['name']})")
 
     elif args.mode == "all":
         print(f"\n  Mode: all WC 2026 squad players")
         players = fetch_wc_players(supabase)
+        for p in players:
+            p["apif_team_id"] = NATIONAL_TEAM_APIF_IDS.get(p.get("wc_team_code") or "")
 
     elif args.mode == "stale":
         print(f"\n  Mode: stale players (low + medium confidence)")
@@ -547,6 +649,36 @@ def main():
             print(f"    ... and {len(players) - 20} more")
         print(f"\n  Total API credits needed: ~{len(players) * 1.5:.0f}")
         return
+
+    # Pre-fetch squads for team-scoped matching (team mode: one squad; all mode: one per team)
+    if players and (args.mode == "team" or args.mode == "all"):
+        if args.mode == "team" and players[0].get("apif_team_id"):
+            apif_team_id = players[0]["apif_team_id"]
+            try:
+                squad_list = api.get_team_squad(apif_team_id)
+                api.throttle()
+                if squad_list:
+                    for p in players:
+                        p["squad_list"] = squad_list
+            except Exception as e:
+                print(f"  WARNING: Could not fetch team squad ({e}); will try search per player.")
+        elif args.mode == "all":
+            # Fetch squad per unique team and attach to players of that team
+            teams_done = set()
+            for p in players:
+                tid = p.get("apif_team_id")
+                if not tid or tid in teams_done:
+                    continue
+                teams_done.add(tid)
+                try:
+                    squad_list = api.get_team_squad(tid)
+                    api.throttle()
+                    if squad_list:
+                        for q in players:
+                            if q.get("apif_team_id") == tid:
+                                q["squad_list"] = squad_list
+                except Exception:
+                    pass
 
     # Run sync
     stats = {"updated": 0, "no_changes": 0, "not_found": 0, "no_match": 0, "api_error": 0, "skipped": 0}
