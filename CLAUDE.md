@@ -117,9 +117,9 @@ Every stage has contracts. If assertions fail in `--strict` mode, the pipeline h
 
 > **For the full prioritized list across both repos, see `~/el-capi/OUTSTANDING.md`.**
 
-### P0 — Full API-Football Sync
+### ~~P0 — Full API-Football Sync~~ ✅ DONE (March 14, 2026)
 
-Only Colombia (28 players) has been synced via APIF so far. Remaining 41 teams need `python -m pipeline.sync.sync_apif_warehouse all`. This will update stale club data across the warehouse.
+Full sync complete. 50 national team IDs mapped in `NATIONAL_TEAM_APIF_IDS`. `python -m pipeline.sync.sync_apif_warehouse all` processed 1,176 players: 295 updated (club, photo, market value), 881 not found on APIF (minor nationalities, youth players — expected). `players.ts` regenerated. Both repos committed and pushed.
 
 ### P1 — Curator Corrections → Warehouse Sync
 
