@@ -90,6 +90,23 @@ NATIONAL_TEAM_APIF_IDS = {
     "PAR": 1144,   # Paraguay
     "BOL": 1145,   # Bolivia
     "VEN": 1146,   # Venezuela
+    # P0 #1: missing national team IDs (from /teams?country=... or lookup_national_team_ids)
+    "ALG": 1532,   # Algeria
+    "AUT": 601,    # Austria
+    "CPV": 19128,  # Cape Verde (Cabo Verde)
+    "CRO": 3,      # Croatia
+    "CUW": 5530,   # Curaçao
+    "IRN": 22,     # Iran
+    "JOR": 1548,   # Jordan
+    "KSA": 23,     # Saudi Arabia
+    "NOR": 1090,   # Norway
+    "NZL": 4673,   # New Zealand
+    "QAT": 1569,   # Qatar
+    "RSA": 1531,   # South Africa
+    "SCO": 1108,   # Scotland
+    "SUI": 15,     # Switzerland
+    "TUN": 28,     # Tunisia
+    "UZB": 1568,   # Uzbekistan
 }
 
 
